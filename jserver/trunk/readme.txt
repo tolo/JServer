@@ -34,7 +34,23 @@ JServer is released under the terms of the Apache Software License,
 version 2.0 (see license.txt).
 
 
-2. Third party library dependencies
+2. Distribution contents
+
+The normal distribution (jserver-X.X.zip) contains the following:
+* dist - contains the main jar file (jserver.jar), zipped source (jserver-X.X-src.zip) and the admin tool start script (jadmin.bat).
+* docs - documentation and javadoc
+
+The full distribution (jserver-X.X-full.zip) contains the following:
+* dist - contains the main jar file (jserver.jar) and the admin tool start script (jadmin.bat).
+* docs - documentation and javadoc.
+* lib - third party libraries, required for building the project.
+* res - images and sounds used by the administration tool.
+* samples - some samples demonstration usage.
+* src - the source code
+* test - test source code and configuration files.
+
+
+3. Third party library dependencies
 
 The full ("-full") distribution of JServer contains all third party libraries that are 
 required to build JServer. All third party libraries are subject to their respective 
@@ -104,7 +120,7 @@ Version: 2.0.1
 License: Apache License Version 2.0
 
 
-3. Where to begin?
+4. Where to begin?
 
 Sample applications may be found in the "samples" directory and there is API 
 documentation available in javadoc format in the "docs" directory. A 
