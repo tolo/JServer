@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="SprintTestClient">
+   
+   <Component name="ClientCommunicationManager">
+      
+      <Component name="MessagingManager">
+         <property name="remoteAddresses" value="localhost:11233"/>
+      </Component>
+   </Component>
+</JServer>

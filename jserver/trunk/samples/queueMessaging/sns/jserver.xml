@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="SnsServer1">
+
+    <SnsManager>
+        <property name="logLevel" value="Debug"/>
+
+        <property name="localAddresses">
+<value>localhost:12121</value>
+      </property>
+        <property name="remoteAddresses" value="localhost:5555"/>
+
+        <property name="responseTimeout" value="5000"/>
+        <property name="checkInteval" value="60000"/>
+        <property name="serverEntryLingerTime" value="1"/>
+        <property name="manualServices">
+<value>WAF=localhost:5555</value>
+         <value>queueTestRelayer=localhost:6829</value>
+      </property>
+   </SnsManager>
+
+   <MainHttpServer name="MainHttpServer">
+<property name="localPort" value="9921"/>
+</MainHttpServer>
+
+</JServer>

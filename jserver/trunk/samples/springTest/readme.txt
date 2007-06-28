@@ -1,0 +1,1 @@
+Before running this example, HSQLDB (hsqldb.jar) and CGLIB (for instance cglib-nodep-2.1_3.jar) must be copied into lib.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="TestHttpServer">
+
+   <Component name="HttpCommunicationManager">
+         <property name="serverSocketFactoryClass" value="com.teletalk.jserver.tcp.SSLServerSocketFactory"/>
+         
+         <Component name="SSLServerSocketFactory">
+         	<property name="keyStoreName" value="keystore"/>
+         	<property name="keyStorePassword" value="password"/>
+		 <property name="securityProtocol" value="TLS"/>
+      </Component>
+   </Component>
+   
+</JServer>

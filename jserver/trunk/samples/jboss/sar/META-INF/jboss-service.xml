@@ -1,0 +1,5 @@
+<server>
+  <mbean code="com.teletalk.jserver.jboss.JServerJBossService" name="com.teletalk.jserver.jboss:service=JServerJBossService">
+     <!--<attribute name="ConfigFilePath">C:\Dev\jserver.xml</attribute>-->
+  </mbean>
+</server>

@@ -1,0 +1,1 @@
+Execute jadmin.bat in the samples directory to start the server administration tool (JAdmin).

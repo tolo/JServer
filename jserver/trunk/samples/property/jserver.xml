@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="PropertyServer">
+   
+   <Component name="PropertySystem">
+      <property name="multiString" value="s6"/>
+   </Component>
+</JServer>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="PeriodicActionServer">
+
+   <PeriodicActionManager name="PeriodicActionManager">
+        <property name="logLevel" value="Info"/>      
+		<property name="abnormalExecutionTime" value="1"/>
+
+      <Component class="TestAction" name="TestAction">
+         <property name="logLevel" value="Info"/>      
+         <property name="periodicityType" value="INTERVAL"/>
+         <!--<property name="periodicityType" value="DAILY"/>-->
+         <property name="periodicityHourOffset" value="8"/>
+         <property name="periodicityMinuteOffset" value="51"/>
+         <property name="interval" value="15000"/>
+      </Component>
+
+   </PeriodicActionManager>
+   
+</JServer>

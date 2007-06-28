@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="Receiver">
+   
+   <Component name="MessagingManager">
+      <property name="localAddresses" value="localhost:12121"/>
+   <property name="remoteAddresses" value="localhost:12121"/>
+</Component>
+
+   
+   <SnsClientManager name="SnsClientManager">
+<property name="logLevel" value="Debug"/>
+</SnsClientManager>
+</JServer>

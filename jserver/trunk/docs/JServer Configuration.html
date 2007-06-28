@@ -1,0 +1,1483 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>JServer 2.2 - Configuration</title>
+
+<link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+
+<body>
+
+<div>
+
+<h1>JServer 2.2 - Configuration</h1></p>
+
+<p>&nbsp;</p>
+
+</div>
+
+<div>
+
+<h2><a><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Introduction</span></a></h2>
+
+
+
+<h3><a><span>1.1.<span> </span></span><span>Dynamic, static or hybrid</span></a></h3>
+
+
+
+<p>In the past, most JServers have been built primarily as static servers, i.e. all functionality and structure has been set
+at compile time. Since version 1.3.1, however, the support for adding functionality dynamically has been extended and made more accessible. This is
+even more so the case with the release of version 2.0.<br>
+<br>
+JServers can now in essence be run in three distinct modes; strictly dynamic (all components are added at runtime), static (all components added at
+compile time) or hybrid (some components are added at compile time, some at runtime). When running the server strictly dynamically, the JServer class
+itself is used as main class. For this purpose, JServer is equipped with a main method to which a set of parameter may be specified (see next
+chapter). When running in static or hybrid modes, a custom main class is used for static creation and registration of component. Since version 2.0
+Build 20041213, however, custom main class implementations may call the method JServer.createServer to make use of the JServer parameter
+functionality.</p>
+
+
+
+<p>When adding components dynamically, the JServer will make sure that
+the component is registered as a child component in the parent component it is defined under. The JServer will also start the dynamic components in a
+top-down pattern.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>1.2.<span> </span></span><span>JServer start-up parameter</span></a></h3>
+
+<p>
+The following parameters may be specified for the main method, as well as the createServer method, of JServer:<br>
+<br>
+</p>
+
+<ul>
+   <li><b><span>-name
+&lt;name&gt;</span></b> - The name of the server.</li>
+
+   <li><b><span>-empty
+-</span></b> Creates an empty server, i.e. no default components are added.</li>
+
+   <li><b><span>-noDefaultAppenders</span></b>
+- Creates a default configuration server, adds no appenders to the LogManager.</li>
+
+   <li><b><span>-conf
+&lt;config file&gt;</span></b> - Uses the specified configuration file.</li>
+
+   <li><b><span>-confClass
+&lt;config class&gt;</span></b> - Uses the specified class as PersistentPropertyStorage implementation in the PropertyManager.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+
+
+
+<h2><a><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Configuration
+file syntax</span></a></h2>
+
+<h3><a><span>2.1.<span> </span></span><span>Introduction</span></a></h3>
+
+<p>As of version 2.0, the default (and the preferred) configuration data source is a XML file, rather than the simple text
+file format used in previous versions. Besides the obvious differences in file format, one of the major differences between the 2.0 XML file and the
+1.X text file, is that only properties that are not using their default value are now saved to the 2.0 XML file.<br>
+<br>
+</p>
+
+<p>This chapter will describe the syntax of the XML configuration file. Chapter 4 contains examples of a few different
+configuration files.</p>
+
+<h3><a><span>2.2.<span> </span></span><span>Basic structure</span></a></h3>
+
+<p><br>
+The syntax of the configuration file consists of three primary tags, <b><span>JServer</span></b>, <b><span>Component</span></b>, and <b><span>Property</span></b>. These tags will be
+described individually in the following chapters.<br>
+<br>
+</p>
+
+<h3><a><span>2.3.<span> </span></span><span>JServer</span></a></h3>
+
+<p><br>
+The JServer tag is the root tag of the XML document. Only one attribute may be specified for this tag - <b><span>name</span></b>
+- i.e the name of the server. In all other respects, the JServer tag is treated similarly to the Component tag.</p>
+
+
+
+<h3><a><span>2.4.<span> </span></span><span>Component</span></a></h3>
+
+<p><br>
+Component tags represent SubSystem or SubComponent components in a JServer. The following attributes may be specified for a component tag:<br>
+<br>
+</p>
+
+<ul>
+   <li><b><span>name</span></b>
+- the name of the component (the full name of the component is determined by the names of the parent component tags).</li>
+
+   <li><b><span>class</span></b>
+- the class implementing the component. This attribute is only necessary if the component is to be loaded dynamically, i.e. if the class is not
+statically compiled into the server.</li>
+</ul>
+
+
+
+<p>Component tags may contain sub tags of the type property and component.</p>
+
+<p><br>
+Example:</p>
+
+
+
+<p>&lt;JServer name=&quot;Client&quot;&gt;</p>
+
+<p>      &lt;Component name=&quot;SendController&quot;&gt;</p>
+
+<p>            &lt;Component name=&quot;MessagingManager&quot;&gt;</p>
+
+<p>                  &lt;property name=&quot;log level&quot; value=&quot;Debug&quot;/&gt;</p>
+
+<p>            &lt;/Component&gt;</p>
+
+<p>      &lt;/Component&gt;</p>
+
+<p>&lt;/JServer&gt;</p>
+
+<p>&nbsp;</p>
+
+
+
+
+
+<h3><a></a><a><span>2.5.<span> </span></span><span>Core component tags</span></a></h3>
+
+<p><br>
+A set of core components (common JServer components) have reserved tag names which must be used when configuring these components. If the server is
+run strictly dynamically, these names are used to create the components. Although they have different names, all of them are in essence component tags
+and follow the same rules. <br>
+The tags are as follows:</p>
+
+
+
+<ul>
+   <li><b><span>EventQueue</span></b>
+   - The event queue (com.teletalk.jserver.event.EventQueue) accessible through methods like JServer.getEventQueue(). See configuration of EventQueue in
+   chapter 3.4.1 for more information.</li>
+
+   <li><b><span>LogManager</span></b>
+-  The log manager (com.teletalk.jserver.log.LogManager) accessible through methods like JServer.getLogManager(). See configuration of LogManager in
+chapter 3.6.5 for more information.</li>
+
+   <li><b><span>MainHttpServer</span></b>
+- The main http server (com.teletalk.jserver.tcp.http.MainHttpServer) accessible through the method JServer.getMainHttpServer(). See configuration of
+HttpServer in chapter 3.19.1 for more information.</li>
+
+   <li><b><span>PeriodicActionManager</span></b>
+- The periodic action manager (com.teletalk.jserver.periodic.PeriodicActionManager) accessible through methods like
+JServer.getPeriodicActionManager(). See configuration of PeriodicActionManager in chapter 3.10.1 for more information.</li>
+
+   <li><b><span>RmiManager</span></b>
+- The RMI manager (com.teletalk.jserver.rmi.RmiManager) accessible through methods like JServer.getRmiManager(). See configuration of RmiManager in
+chapter 3.15.1 for more information.</li>
+
+   <li><b><span>ConfigurationManager</span></b>
+- The configuration (property) manager (com.teletalk.jserver.property.PropertyManager), accessible through methods like JServer.getPropertyManager().
+See configuration of PropertyManager in chapter 3.12.1 for more information.</li>
+
+   <li><b><span>RmiAdministration</span></b>
+- Not really an actual component, but rather the setter of a flag to indicate that RMI administration should be enabled. This is only necessary when
+the server is run strictly dynamically.</li>
+
+   <li><b><span>LoadManager</span></b>
+- Creates the load manager (com.teletalk.jserver.load.LoadManager), accessible through methods like JServer.getLoadManager(). See configuration of
+LoadManager in chapter 3.5.1 for more information.</li>
+
+   <li><b><span>StatiticsManager</span></b>
+- Creates the statistics manager (com.teletalk.jserver.statistics.StatisticsManager), accessible through methods like JServer.getStatisticsManager().
+See configuration of StatisticsManager in chapter 3.17.1 for more information.</li>
+
+   <li><b><span>SpringApplicationContext</span></b>
+- Creates the Spring application context (com.teletalk.jserver.spring.SpringApplicationContext), accessible through the method
+JServer.getSpringApplicationContext(). See configuration of SpringApplicationContext in chapter 3.16 for more information.</li>
+
+   <li><b><span>SnsClientManager</span></b>
+- Creates the SNS client manager (com.teletalk.jserver.net.sns.client.SnsClientManager), accessible through methods like
+JServer.getSnsClientManager(). See configuration of SpringApplicationContext in chapter 3.8.1 for more information.</li>
+
+   <li><b><span>SnsManager</span></b>
+- Creates the SNS server side component (the actual SNS) (com.teletalk.jserver.net.sns.server.SnsManager), accessible through methods like
+JServer.getSnsManager(). See configuration of SpringApplicationContext in chapter 3.9.1 for more information.</li>
+
+</ul>
+
+<p>A custom implementation class may be specified (attribute <b><span>class</span></b>) for
+most of the core components, except for EventQueue, LogManager, ConfigurationManager and RmiAdministration.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>2.6.<span> </span></span><span>Property</span></a></h3>
+
+
+
+<p>Property tags assigns values to properties (settings) of components in a JServer. The following attributes may be specified
+for a property tag:<br>
+<br>
+</p>
+
+<ul>
+   <li><b><span>name</span></b>
+- the name of the property (the full name of the component is determined by the names of the parent component tags).</li>
+
+   <li><b><span>value</span></b>
+- the value of the property.</li>
+</ul>
+
+
+
+<p>The value of a property may also be specified through the body of the property tag or set by one or more <b><span>value</span></b> child tags. The latter is useful for properties that may have more than one value. <br>
+<br>
+Example:</p>
+
+
+
+<p>&lt;SubSystem name=&quot;KahunaSystem&quot;&gt;</p>
+
+<p>&lt;property name=&quot;property1&quot; value=&quot;value&quot;/&gt;</p>
+
+<p>&lt;property name=&quot;property2&quot;&gt;value&lt;/ property &gt;</p>
+
+<p>&lt;property name=&quot;adresses&quot;&gt;</p>
+
+<p>           &lt;value&gt;1.2.3.4:1111&lt;/value&gt;</p>
+
+<p>           &lt;value&gt;1.2.3.4:2222&lt;/value&gt;</p>
+
+<p>&lt;/property&gt;</p>
+
+<p>&lt;/SubSystem&gt;<br>
+<br>
+</p>
+
+<h3><a><span>2.7.<span> </span></span><span>Property </span></a><span>meta</span><span>
+data</span></h3>
+
+
+
+<p>For all property tags, the option to specify extra meta data exists. Meta data is specified through one or more <b><span>metadata</span></b> tags. The following attributes may be specified for a metadata tag:<br>
+<br>
+</p>
+
+<ul>
+   <li><b><span>name</span></b>
+- the name/key of the meta data entry.</li>
+
+   <li><b><span>value</span></b>
+- the value meta data entry.</li>
+</ul>
+
+
+
+<p>The value of a meta data entry may also be specified through the body of the metadata tag.</p>
+
+<h3><a><span>2.8.<span> </span></span><span>Types of properties</span></a></h3>
+
+<p><br>
+Properties come in a variety of different flavors for different types of values, for instance string (<b>StringProperty</b>), numerical (<b>NumberProperty</b>)
+or boolean (<b>BooleanProperty</b>) values. For certain properties, multiple values may be specified. These are by default <b>MultiStringProperty</b>,
+MapProperty (values on the format &lt;key&gt;=&lt;value&gt;) and <b>IpAndPortProperty/<br>
+TcpEndPointIdentifierProperty</b> (values on the format &lt;ip/host&gt;:&lt;port&gt;). <br>
+Another type of property is the <b>EnumProperty</b>, which uses a fixed set of possible values. These values may be referred to as a name or by an
+index. An example of this is for instance the property log level of SubComponent, when for instance the log level info may be set by specifying the
+string <span>Info</span> or the number <span>2</span>.</p>
+
+<b><span><br>
+</span></b>
+
+<h2><a><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Component
+configuration</span></a></h2>
+
+<h3><a><span>3.1.<span> </span></span><span>Terminology etc</span></a></h3>
+
+<p><br>
+Properties that are non-persistent, i.e. read-only and strictly used for presentation are marked as <i>italic</i> and colored <span>gray</span>.</p>
+
+<p>Properties that are only possible to set in the configuration file prior to server start are colored <span>blue</span>.</p>
+
+<p>Properties that trigger a restart of the parent component are colored as <span>red</span>.</p>
+
+<p><br>
+Note on default values: Other property default values than those stated here may be used on certain server implementations due to hard coding etc.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.2.<span> </span></span><span>Common configuration</span></a></h3>
+
+
+
+<p>All components of a JServer are based on the classes SubComponent or SubSystem (which is based on SubComponent). This means
+that all components also inherit the properties of those two base components. These properties are described below:<br>
+<br>
+</p>
+
+<h4>3.2.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>SubComponent</h4>
+
+<h5><span>Properties:</span></h5>
+
+<ul>
+<li><b><i><span>status</span></i></b> -
+The status of the component. May be one of the constants ENABLED, INITIALIZING, CREATED, REINITIALIZING, SHUTTING_DOWN, DOWN, ERROR, CRITICAL_ERROR,
+DESTROYED.</li>
+
+<li><b>logLevel</b> - The log level of the component.
+Valid values are “All” (0), “Debug” (1), “Info” (2), “Warning” (3), “Error” (4), “Fatal” (5), “Off” (6). Default value is Info.</li>
+
+<li><b><i><span>errorReason</span></i></b> - The last reason of an error in the component.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.2.2.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>SubSystem</h4>
+
+<p>SubSystem inherits the properties of SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+
+<ul>
+<li><b><i><span>startTime</span></i></b> - The time when this subsystem was started.</li>
+
+<li><b><span>maxRestarts</span></b>
+- The maximum number of attempts that should be made to restart the subsystem when an error occurs. The minimum value of this property is 0. Default
+value is 5.</li>
+
+<li><b><span>restartInterval</span></b>
+- The interval in milliseconds between restarts. The minimum value of this property is 100 ms. Default value is 5000 ms.</li>
+
+<li><b><i><span>restartCounter</span></i></b> - The number of times the subsystem has been restarted.</li>
+
+<li><b><span>keySystem</span></b>
+- Boolean property indicating if this subsystem is a key system. If this flag is set to true, a fatal error will be logged if an error occurs in this
+subsystem and it cannot be restarted (status CRITICAL_ERROR). Default value is <span>false</span>.</li>
+
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.3.<span> </span></span><span>Top system configuration
+- com.teletalk.jserver.JServer</span></a></h3>
+
+<p>JServer inherits the properties of SubSystem.</p>
+
+<h5><span>Properties:</span></h5>
+
+<ul>
+<li><b><i><span>activeThreadCount</span></i></b> - The number of active threads in this server (belonging to the top thread
+group or one of it’s children).</li>
+
+<li><b><i><span>jServerVersion</span></i></b> - The JServer version.</li>
+
+<li><b><i><span>serverVersion</span></i></b> - The user defined version of the server.</li>
+
+<li><b><span>checkInterval</span></b>
+- The interval in milliseconds between two consecutive SubSystem checks. The minimum value of this property is 1000 ms (although it is advisable to
+use a considerably higher value). Default value is 30000 ms.</li>
+
+<li><b><i><span>currentDirectory</span></i></b> - The current directory of the server process.</li>
+
+<li><b><i><span>javaVMInfo</span></i></b> - Java VM information.</li>
+
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.4.<span> </span></span><span>Components in package
+com.teletalk.jserver.event</span></a></h3>
+
+<h4><a>3.4.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>EventQueue</a></h4>
+
+<p>EventQueue manages the main event queue of a JServer. EventQueue
+inherits the properties of SubSystem. EventQueue also contains a ThreadPool (named <i><span>EventDispatcherPool</span></i>).</p>
+
+<h5><span>Properties:</span></h5>
+
+<ul>
+<li><b><span>maxQueueSize</span></b>
+- The maximum size of the queue that holds event objects that are waiting to be processed. Default value is 10000. A value of 0 or less means that no
+maximum limit will be imposed.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.5.<span> </span></span><span>Components in package
+com.teletalk.jserver.load</span></a></h3>
+
+<h4><a>3.5.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>LoadManager</a></h4>
+
+<p>LoadManager handles load monitoring of a JServer. LoadManager
+inherits the properties of SubSystem.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+
+<li><b><i><span>loadThreads</span></i></b> - The threads currently registered for reporting load.</li>
+
+<li><b><i><span>load</span></i></b> - The total load of all registered threads.</li>
+
+<li><b><span>loadUpdateInterval
+</span></b>- The interval in milliseconds at which the property indicating load will be updated. Min value is 100 ms. Default value is 500 ms.</li>
+
+<li><b><span>threadCheckInterval
+</span></b>- The interval in milliseconds at which the LoadManager will check for dead threads and reevaluate load. Min value is 1000 ms. Default value is 30000
+ms.</li>
+
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.6.<span> </span></span><span>Components in package
+com.teletalk.jserver.log</span></a></h3>
+
+<h4>3.6.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>AppenderComponent</h4>
+
+<p>AppenderComponent is an abstract base class of appender (log writer) implementations and inherits the properties of
+SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>logLevelThreshold
+</span></b>- The log level threshold of this appender component (not to be confused with the log level of this component!). This property determines the minimum
+log level of logging events that may be logged through this component. Valid values are “<span>All” (0),
+“Debug” (1), “Info” (2), “Warning” (3), “Error” (4), “Fatal” (5), “Off” (6)</span>. Default value is <span>All</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.6.2.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>PeriodicityAppenderComponent</h4>
+
+<p>PeriodicityAppenderComponent is an abstract base class for periodic appender (log writer) implementations and inherits the
+properties of AppenderComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b>periodicity </b>- Enumeration property for the
+periodicity and cyclicity at which the current log will be exchanged. Valid values are “Daily (no cyclicity)” (0), “Daily (weekly cyclicity)” (1),
+“Daily (monthly cyclicity)” (2), “Weekly (no cyclicity)” (3), “Weekly (monthly cyclicity)” (4), “Weekly (yearly cyclicity)” (5), “Monthly (no
+cyclicity)” (6), “Monthly (yearly cyclicity)” (7). Default value is Daily (no cyclicity).</li>
+
+<li><b><i><span>lastLogChange</span></i></b><b><span> </span></b>- The time of the last
+logchange.</li>
+
+<li><b><i><span>nextLogChange</span></i></b><b><span> </span></b>- The time of the next
+logchange.</li>
+
+<li><b><i><span>currentLog</span></i></b> - The name of the current log.</li>
+
+<li><b><span>logPrefix</span></b> - The prefix of logs generated by this logger. Default value is the name of the server
+followed by an underscore.</li>
+
+<li><b><span>logSuffix</span></b> - The suffix of logs generated by this logger. Default value is empty string.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.6.3.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>FileAppenderComponent</h4>
+
+<p>FileAppenderComponent is a file based appender (log writer) component that inherits the properties of
+PeriodicityAppenderComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>flushInterval
+</span></b>- The interval in milliseconds between log file flushes. Default value is <span>5000</span> ms.</li>
+
+<li><b><span>logFilePath</span></b><b><span> </span></b>- The base path of generated
+log files. Default value is current directory (empty string).</li>
+
+<li><b><span>defaultLayoutPattern
+</span></b>- The pattern used for the default layout - PatternLayoyt(ExtendedPatternLayout). Default value is <span>%d 
+%-5p  [%t] - %m %S%n</span>, which in essence means date and time, level, thread name, message and stack trace (if any). See Log4J documentation for more
+details on configuration of this property (see chapter 5). Note that the %S conversion character is JServer specific (through the use of the class
+com.teletalk.jserver.log.ExtendedPatternLayout), and is used for inclusion of stack traces.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.6.4.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>CriticalErrorAppenderComponent</h4>
+
+<p>CriticalErrorAppenderComponent is special appender (log writer)
+that dispatches critical erros to a Critical Error Log Manager (CELMa) or writes them to a file. CriticalErrorAppenderComponent inherits the
+properties of FileAppenderComponent, minus the properties logLevelThreshold, periodicity, lastLogChange, nextLogChange, currentLog, flushInterval and
+defaultLayoutPattern.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>remoteLoggingEnabled
+</span></b>- Boolean property indicating if remote logging over HTTP is enabled. Default value is <span>false</span>.</li>
+
+<li><b><span>remoteLoggingAddresses
+</span></b>- The addresses (ip:port) to be used for logging over HTTP. Note that only one of the addresses will receive a log message. Default value is no
+addresses.</li>
+
+<li><b><span>writeLocalErrorFiles
+</span></b>- Boolean property indicating if local error files should be generated as a backup to remote logging (if remote logging is successful, no file will be
+generated event if this property is true). Default value is <span>true</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4><a>3.6.5.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>LogManager</a></h4>
+
+<p>LogManager is the core class for log management in a JServer and inherits the properties of SubSystem.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>maxQueueSize
+</span></b>- The maximum size of the queue that holds log messages that are waiting to be processed. A value of 0 or less means that no maximum limit will be
+imposed. Default value is <span>10000</span>.</li>
+
+<li><b><span>getLocationInformation
+</span></b>- Boolean property indicating if location information should be generated for logging events. Note that generation of location information may have an
+adverse effect on performance. Default value is <span>false</span>.</li>
+
+<li><b><span>addToRootLogger
+</span></b>- Boolean property indicating if this LogManager should be added as an appender in the root loggger, thus enabling logging through non JServer
+components. Default value is <span>false</span>.</li>
+
+<li><b><span>rootLoggerLogLevel
+</span></b>- The log level of the root logger. Default value is <span>INFO</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.6.6.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>ManagedLoggerComponent</h4>
+
+<p>Subcomponent class for controlling the log level of one or more loggers that aren't defined through a subcomponent. The log
+level of this component is used to set the log level of the target loggers.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>managedLoggerNames
+</span></b>- The names of the loggers that this component is to manage the log level for. The names specified here may be the complete name of a logger or a part
+of the logger chain - for example com.test.logger or com.test.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.7.<span> </span></span><span>Components in package
+com.teletalk.jserver.net.acl</span></a></h3>
+
+<h4>3.7.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>DefaultAccessControlListHandler</h4>
+
+<p>DefaultAccessControlListHandler is the default access control list implementation. DefaultAccessControlListHandler inherits
+the properties of SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><span><b><span>accessControlCheckEnabled</span></b></span> - Flag indicating if access checks should be enabled or not. Default value is
+true.</li>
+
+<li><span><b><span>configurationFile</span></b></span> - The path of the access control list configuration file. Default value is
+&quot;acl.xml&quot;.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.8.<span> </span></span><span>Components in package
+com.teletalk.jserver.net.sns.client</span></a></h3>
+
+<h4><a>3.8.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>SnsClientManager</a></h4>
+
+<p>SnsClientManager is a component used to connect to an SNS server (SnsManager). This class inherits the properties of
+MessagingManager.</p>
+
+<p>&nbsp;</p>
+
+
+<h3><a><span>3.9.<span> </span></span><span>Components in package
+com.teletalk.jserver.net.sns.server</span></a></h3>
+
+<h4><a>3.9.1.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span>SnsManager</a></h4>
+
+<p>SnsManager is a component implementing SNS (Service Name Service) functionality inherits the properties of MessagingManager.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>serverEntryLingerTime
+</span></b>- The maximum time in minutes that a server entry will be kept in this SNS after the connection has been lost. Default value is 60.</li>
+
+<li><b><span>manualServices
+</span></b>- Storage for manually configured services. Format: &lt;serviceName&gt;=&lt;address:port&gt;,&lt;address:port&gt;. Default value is empty.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.10.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.periodic</span></a></h3>
+
+<h4><a>3.10.1.<span>&nbsp;&nbsp; </span>PeriodicActionManager</a></h4>
+
+<p>PeriodicActionManager support handling and execution of periodic actions and and inherits the properties of SubSystem.
+PeriodicActionManager contains a ThreadPool (named <i><span>PeriodicActionThreadPool</span></i>).</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>abnormalExecutionTime
+</span></b>- The maximum time (in minutes) an action is allowed to execute before a critical error is logged.. Default value is <span>60</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.10.2.<span>&nbsp;&nbsp; </span>PeriodicAction</h4>
+
+<p>PeriodicAction is a base class for components implementing periodic
+actions. This class inherits the properties of SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b>periodicityType </b>- Enumeration property for the
+periodicity type. Valid values are “INTERVAL” (0), “HOURLY” (1), “DAILY” (2), “WEEKLY” (3), “MONTHLY” (4). Default value is HOURLY.</li>
+
+<li><b><span>periodicityDayOffset
+</span></b>- The periodicity day offset. Default value is <span>0</span>.</li>
+
+<li><b><span>periodicityHourOffset
+</span></b>- The periodicity hour offset. Default value is <span>0</span>.</li>
+
+<li><b><span>periodicityMinuteOffset
+</span></b>- The periodicity minute offset. Default value is <span>0</span>.</li>
+
+<li><b><span>interval
+</span></b>- The interval in milliseconds when periodicityType is <span>INTERVAL</span>. Minimum value is <span>100</span> ms. Default value is <span>60000</span> ms.</li>
+
+<li><b><i><span>actionStatus</span></i></b><b><span> </span></b>- A string containing an
+action status description.</li>
+
+<li><b><i><span>lastExecutionResult</span></i></b><b><span> </span></b>- A string
+representing the last execution result.<b><i><span> lastExecutionStartTime</span></i></b><b><span> </span></b>- The time of the last execution.</li>
+
+<li><b><i><span>timeOfNextExecution</span></i></b><b><span> </span></b>- The time of the
+next execution.</li>
+
+<li><b><span>forcedExecution
+</span></b>- Boolean property used to force the execution of this action.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.11.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.pool</span></a></h3>
+
+<h4>3.11.1.<span>&nbsp;&nbsp; </span>ObjectPool</h4>
+
+<p>ObjectPool is a base component that suports pooling of objects. This class inherits the properties of SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>minSize
+</span></b>- The minimum size of the pool. The value of this property will only be used if max size if set. Default value is <span>0</span>.</li>
+
+<li><b><span>maxSize
+</span></b>- The maximum size of the pool. If the value of this property is == 0, the pool is growable. Default value is <span>10</span>.</li>
+
+<li><b><span>objectExpirationTime
+</span></b>- Expiration time in milliseconds of objects in the pool. Object expiration will be checked if this value is &gt; 0, i.e. a value of 0 disables object
+expiration checking. Default value is <span>0</span> (unless specified in code).</li>
+
+<li><b><span>cleanupInterval
+</span></b>- The interval in milliseconds at which this pool is cleaned by the PoolCleaner. Default value is <span>60000</span>.</li>
+
+<li><b><span>statisticsEnabled
+</span></b>- Boolean value indicating if statistical information should be calculated. This flag dictates if certain statistical properties will be visible.
+Default value is <span>false</span>.</li>
+
+<li><b><i><span>averageCheckoutTime</span></i></b><b><span> </span></b>- The average time
+in milliseconds between check out and check in (statistics enabled must be <span>true</span>).</li>
+
+<li><b><i><span>totalCheckouts</span></i></b><b><span> </span></b>- Total number of
+checkouts (statistics enabled must be <span>true</span>).</li>
+
+<li><b><i><span>checkedOutItems</span></i></b><b><span> </span></b>- The number of
+checked out objects (statistics enabled must be <span>true</span>).</li>
+
+<li><b><i><span>checkedInItems</span></i></b><b><span> </span></b>- The number of checked
+in objects (statistics enabled must be <span>true</span>).</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.11.2.<span>&nbsp;&nbsp; </span>DefaultObjectPool</h4>
+
+<p>DefaultObjectPool is a default implementation of a simple object pool. This class inherits the properties of ObjectPool.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.11.3.<span>&nbsp;&nbsp; </span>ThreadPool</h4>
+
+<p>ThreadPool is a pool for threads and inherits the properties of ObjectPool.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.11.4.<span>&nbsp;&nbsp; </span>DBConnectionPool</h4>
+
+<p>DBConnectionPool is a pool for database connections and inherits the properties of ObjectPool.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>driver</span></b><b><span> </span></b>- The name (fully qualified class
+name) of the database driver used by this DBConnectionPool to create database connections.</li>
+
+<li><b><span>databaseURL</span></b><b><span> </span></b>- The URL of the database
+which this DBConnectionPool should create connections to.</li>
+
+<li><b><span>username</span></b><b><span> </span></b>- The username needed to access
+the specified database.</li>
+
+<li><b><span>password</span></b><b><span> </span></b>- The password needed to access
+the specified database.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.12.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.property</span></a></h3>
+
+<h4><a>3.12.1.<span>&nbsp;&nbsp; </span>PropertyManager</a></h4>
+
+<p>PropertyManager is the core configuration management component in the JServer. This class inherits the properties of
+SubSystem.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>calculationInteval
+</span></b>- The interval in milliseconds at which properties owned by CalculatedPropertyOwners are recalculated (deprecated feature). Default value is <span>2000</span> ms.</li>
+
+<li><b><span>saveInterval
+</span></b>- The interval in milliseconds at which properties are saved to file (if needed). Default value is <span>15000</span>
+ms.</li>
+
+<li><b><span>locale
+</span></b>- String representation of the locale to use as default for the whole JVM (for instance sv_SE, en_US, etc). Note that the default locale is essential
+when representing certain properties as strings. Default value is the default locale of the JVM (as returned by the method
+Locale.getDefault().toString).</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.13.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.queue</span></a></h3>
+
+<h4>3.13.1.<span>&nbsp;&nbsp; </span>QueueManager</h4>
+
+<p>QueueManager is a component for distributed queue management and inherits the properties of SubSystem. QueueManager may
+contain up to two Queues (usually names in-queue and out-queue) and a DefaultQueueSystemCollaborationManager as child components.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>checkInterval<i><span> </span></i></span></b>- Interval in milliseconds at which checks a made. Default value is <span>10000</span>
+ms.</li>
+
+<li><b><span>outitemWarningAge<i><span> </span></i></span></b>- The maximum age in milliseconds an item in the out queue can have before a warning is sent to the queue controller.
+Default value is <span>600000</span> ms.</li>
+
+<li><b><span>maxInQueueSize<i><span> </span></i></span></b>- The maximum size of the in queue, -1 if the in queue has no maximum size. Default value is <span>-1</span>.</li>
+
+<li><b><span>unsentResponseMaxAge<i><span> </span></i></span></b>- The maximum time (in hours) to keep an unsent response. Default value is <span>12</span>
+hours.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.13.2.<span>&nbsp;&nbsp; </span>DefaultQueueSystemCollaborationManager</h4>
+
+<p>DefaultQueueSystemCollaborationManager is a communication manager used by QueueManager and inherits the properties of
+TcpCommunicationManager. DefaultQueueSystemCollaborationManager contains a TcpServer (named TcpServer) as a child component.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>checkInterval<i><span> </span></i></span></b>- The interval in milliseconds at which checks are performed on all connections to other queue systems. Default value
+is <span>2500</span> ms.</li>
+
+<li><b><span>statusMessageInterval<i><span> </span></i></span></b>- The interval in milliseconds at which status messages are dispatched to all remote queue systems connected to this
+queue system. Default value is <span>5000</span> ms.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.13.3.<span>&nbsp;&nbsp; </span>Queue</h4>
+
+<p>Queue (and also the class PriorityQueue) is a component representing a queue and inherits the properties of SubComponent.
+Queue may contain a queue storage as a child component, such as DefaultQueueStorage or FileDBQueueStorage.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><i><span>items</span></i></b><b><span> </span></b>- A list containing information
+about the items in the queue.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.13.4.<span>&nbsp;&nbsp; </span>DefaultQueueStorage</h4>
+
+<p>DefaultQueueStorage is the default queue persistence implementation and inherits the properties of ObjectPool.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>queueItemSavePath</span></b><b><span> </span></b>- The path when queue
+item objects are to be saved. Default value is the a directory under the current directory, named as the parent Queue and suffixed by “.storage”.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.13.5.<span>&nbsp;&nbsp; </span>FileDBQueueStorage</h4>
+
+<p>FileDBQueueStorage is a file database queue persistence component and inherits the properties of SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>fileDatabaseDirectory</span></b><b><span> </span></b>- The directory
+where the file database will be stored. Default value is the a directory under the current directory, named as the parent Queue and suffixed by
+“.storage”.</li>
+
+<li><b><span>dataFileBlockSize</span></b><b><span> </span></b>- The block size (in
+bytes) of the data file of the file database. Default value is <span>2048</span>.</li>
+
+<li><b><span>dataFileInitialBlockCount</span></b><b><span> </span></b>- The initial
+number of blocks in the data file. Default value is <span>1000</span>.</li>
+
+<li><b><span>indexFileInitialBlockCount</span></b><b><span> </span></b>- The initial
+number of blocks in the index file. Default value is <span>1000</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.13.6.<span>&nbsp;&nbsp; </span>InQueueControllerSystem</h4>
+
+<p>InQueueControllerSystem is a queue system controller component for queue systemts that contains an in queue. This class
+inherits the properties of SubSystem.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.13.7.<span>&nbsp;&nbsp; </span>OutQueueControllerSystem</h4>
+
+<p>OutQueueControllerSystem is a queue system controller component for queue systemts that contains an out queue. This class
+inherits the properties of SubSystem.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.13.8.<span>&nbsp;&nbsp; </span>InOutQueueControllerSystem</h4>
+
+<p>InOutQueueControllerSystem is a queue system controller component for queue systemts that contains both in and out queues.
+This class inherits the properties of SubSystem.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.14.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.queue.messaging</span></a></h3>
+
+<h4>3.14.1.<span>&nbsp;&nbsp; </span>QueueMessagingManager</h4>
+
+<p>QueueSystemCollaborationManager implementation using messaging (com.teletalk.jserver.tcp.messaging.MessagingManager) as
+communication framework. This class inherits the properties of MessagingManager. Note that the property connectionsPerDestination is set to 1 and
+removed, since the implementation depends on the fact that only one connection exists to each destination.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.15.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.rmi</span></a></h3>
+
+<h4><a>3.15.1.<span>&nbsp;&nbsp; </span>RmiManager</a></h4>
+
+<p>RmiManager is the core component enabling RMI communication with this server. This class inherits the properties of
+SubSystem.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>checkInterval
+</span></b>- The interval in milliseconds at which this RmiManager should perform various checks to determine the status of, among other things, the connection
+to the Rmi registry. Default value is <span>5000</span> ms.</li>
+
+<li><b><span>registryAddresses
+</span></b>- Addresses (host:port) to RMI registries to which this RmiManager should connect and register the server. Default value is <span>0.0.0.0:1099</span>. Note that on JVM versions prior to 1.4, only one address may be specified.</li>
+
+<p><span>&bull;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><b><span>rmiCodeBase</span></b><b><span> </span></b>- The value for the system
+property java.rmi.server.codebase, used when loading resources like custom administration panels from this server via RMI. If multiple codebase urls
+are to be specified, they must be delimited by spaces. If a codebase url denotes a directory it must have a trailing /.</p>
+
+<li><b><span>rmiMethodCallLoggingEnabled
+</span></b>- Boolean value indicating if rmi method calls should be logged. If this property is set to true all method calls in the rmi adapter classes (package
+com.teletalk.jserver.rmi.adapter) will be logged. Default value is <span>false</span>.</li>
+
+<li><b><span>rmiExportAddresses</span></b><b><span> </span></b>- The local
+addresses on which RMI objects (such as subsystem RMI adapter classes etc.) should be exported (listen) on. Note that only one address is possible at
+the moment. If no value is specified, the first available port on the local host will be used.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a></a><a><span>3.16.<span>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span>Components in package com.teletalk.jserver.spring</span></a></h3>
+
+<h4>3.16.1.<span>&nbsp;&nbsp; </span>SpringApplicationContext</h4>
+
+<p>SpringApplicationContext is a component for Spring integration and inherits the properties of SubComponent.</p>
+
+<p>SubComponent subclasses defined in the application context will be given the name of the bean (id or name) and registered
+under the top subsystem (JServer). If however the name of the bean is of a dot-separated format, SpringApplicationContext will attempt for find a
+matching name chain in the server and add the component under the appropriate parent. Components will be engaged automatically after creation.</p>
+
+<p>All core systems in JServer will be made available as beans in a parent context of the context created by this component. The
+names of those beans correspond to the core component aliases defined in class JServerConstants, which are the same as the core component tag names
+(see chapter 2.5).</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>applicationContextPath
+</span></b>- The path of the Spring XML application context bean definition file to be used. Default value is spring.xml.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.16.2.<span>&nbsp;&nbsp; </span>SubComponentBeanProxy</h4>
+
+<p>SubComponent to be used as a proxy for a bean (typically contained in a Spring application context, although this is not
+necessary) and thus making it possible to expose the properties of that bean though JServer properties. The bean property types that may be controlled
+though this class are all primitive types and corresponding wrapper classes as well as the classes java.lang.String, java.io.File and java.net.URL.</p>
+
+<p>The bean reference is set by calling the method setBean(Object).</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><i><span>beanName</span></i></b><b><span> </span></b>- The name of the bean that
+is to be proxied.</li>
+
+<li><b><i><span>useJServerPropertyFile</span></i></b><b><span> </span></b>- Flag
+indicating if the JServer property file should be used as soruce for property values.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.17.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.statistics</span></a></h3>
+
+<h4><a>3.17.1.<span>&nbsp;&nbsp; </span>StatisticsManager</a></h4>
+
+<p>StatisticsManager is a component for runtime statistics of a server. This class inherits the properties of SubComponent.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.18.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp</span></a></h3>
+
+<h4>3.18.1.<span>&nbsp;&nbsp; </span>TcpServer</h4>
+
+<p>TcpServer is a simple tcp listener component that inherits the properties of SubSystem. TcpServer may use a TcpConnectionPool
+(usually named ConnectionPool) and a SSLServerSocketFactory as child components.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>localPort</span></b><b><span> </span></b>- The the port on which this
+TcpServer should listen for requests. The port number must be between 0 and 65535, inclusive.</li>
+
+<p><span>&bull;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><b><span>localAddress</span></b><b><span> </span></b>- The local address to which
+this TcpServer is bound. If the value of this property is empty or '0.0.0.0' the server will accept connections on any/all local addresses.</p>
+
+<li><b><span>backlog</span></b><b><span> </span></b>- The maximum queue length for
+incoming connection indications (a request to connect). The backlog must be &gt;= 0. Default value is <span>50</span>.</li>
+
+<li><b><span>connectionLoggingEnabled
+</span></b>- Flag indicating if connection activity should be logged. Default value is <span>true</span>.</li>
+
+<li><b><span>serverSocketFactoryClass</span></b><b><span> </span></b>- Class name
+of the server socket factory to be created for this system on start up. An empty string (default value) means that the default factory will be used.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.18.2.<span>&nbsp;&nbsp; </span>TcpCommunicationManager</h4>
+
+<p>TcpCommunicatioManager is a component for tcp communication that inherits the properties of SubSystem. TcpCommunicatioManager
+may contain a number of TcpServers as child components (named “TcpServer@&lt;ip:port&gt;”, corresponding to the local addresses property).
+TcpCommunicatioManager also contains a ThreadPool (named EndpointPool) as a child component.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><i><span>activeEndpoints</span></i></b><b><span> </span></b>- A list containing
+information about all active endpoints.</li>
+
+<li><b><i><span>endpointGroups</span></i></b><b><span> </span></b>- A list containing
+information about all endpoints groups.</li>
+
+<li><b><span>localAddresses
+</span></b>- The server addresses (ip:port) on which to listen for connections.</li>
+
+<li><b><span>connectTimeout
+</span></b>- Connect timeout in milliseconds used when creating new client sockets. Default value is <span>2500</span> ms.</li>
+
+<li><b><span>connectAttempts
+</span></b>- Maximum number of attempts that should be made to create a client socket connection before aborting. Default value is <span>5</span>.</li>
+
+<li><b><span>socketFactoryClass</span></b><b><span> </span></b>- Class name of the
+socket factory to be created for this system on start up. An empty string means that the default factory will be used.</li>
+
+<li><b><span>serverSocketFactoryClass</span></b><b><span> </span></b>- Class name
+of the server socket factory to be created for this system on start up. An empty string means that the default factory will be used.</li>
+
+<li><b><span>clientSocketBindAddress
+</span></b>- The local address to be used when binding client sockets. Note that changing this property will not affect already created sockets. An empty value
+means that the default address will be used.</li>
+
+<li><b><span>clientSocketBindPortBegin
+</span></b>- The first port number to use when binding client sockets. Note that changing this property will not affect already created sockets. If this value is
+set to &lt;= 0, client socket bind (local) port will be assigned automatically. Default value is <span>-1</span>.</li>
+
+<li><b><span>clientSocketBindPortEnd
+</span></b>- The last port number to use when binding client sockets. Note that changing this property will not affect already created sockets. If this value is
+set to &lt;= 0, client socket bind (local) port will be assigned automatically. Default value is <span>-1</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.18.3.<span>&nbsp;&nbsp; </span>SSLComponent</h4>
+
+<p>SSLComponent is an abstract base class for SSL enabled components. This class inherits the properties of SubComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>securityProtocol</span></b><b><span> </span></b>- The name of the
+security protocol to use, for instance SSL or TLS. This property must be set.</li>
+
+<li><b><span>securityProviderClass</span></b><b><span> </span></b>- The fully
+qualified name of an security provider class. Note that his property, if specified, takes precedence over the property securityProviderName. This
+property is optional. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>securityProviderName</span></b><b><span> </span></b>- The name of the
+security provider to use. If not specified, the default (or other matching provider) is used. This property is only checked if securityProviderClass
+is not set. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>keyManagerFactoryAlgorithmName</span></b><b><span> </span></b>- The name
+of the key management algorithm to be used by the key manager. If not set, the default algorithm will be used. Default value is empty string, i.e. not
+set.</li>
+
+<li><b><span>keyStoreType</span></b><b><span> </span></b>- The type of key store to
+use, for instance jks or pkcs12. If not specified, the default type will be used. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>keyStoreName</span></b><b><span> </span></b>- The name (file name) of the
+key store to be used. This property must be specified if a key manager is to be used. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>keyStorePassword</span></b><b><span> </span></b>- The password set for
+the key store. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>keyManagerClass</span></b><b><span> </span></b>- The fully qualified name
+of a class to be used as a key manager. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>trustManagerFactoryAlgorithmName</span></b><b><span> </span></b>- The
+name of the trust management algorithm to be used by the trust manager. If not set, the default algorithm will be used. Default value is empty string,
+i.e. not set.</li>
+
+<li><b><span>trustStoreType</span></b><b><span> </span></b>- The type of trust store
+to use, for instance jks or pkcs12. If not specified, the default type will be used. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>trustStoreName</span></b><b><span> </span></b>- The name (file name) of
+the trust store to be used. This property must be specified if a trust manager is to be used. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>trustStorePassword</span></b><b><span> </span></b>- The password set for
+the trust store. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>trustManagerClass</span></b><b><span> </span></b>- The fully qualified
+name of a class to be used as a trust manager. Default value is empty string, i.e. not set.</li>
+
+<li><b><span>useNaiveTrustManager</span></b><b><span> </span></b>- Boolean value
+indicating if a naive trust manager is to be used, i.e. a trust manager that allows everything. If this property is set to true, all other trust
+store/manager related properties are disregarded. Default value is <span>false</span>.</li>
+</ul>
+<p> </p>
+
+<h4>3.18.4.<span>&nbsp;&nbsp; </span>SSLServerSocketFactory</h4>
+
+<p>SSLServerSocketFactory is an SSL enabled server socket factory and inherits the properties of SSLComponent.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.18.5.<span>&nbsp;&nbsp; </span>SSLSocketFactory</h4>
+
+<p>SSLSocketFactory is an SSL enabled socket factory and  inherits the properties of SSLComponent.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>useNaiveHostnameVerifier</span></b><b><span> </span></b>- Boolean value
+indicating if a naive host name verifier is to be used, i.e. a host name verifier that ignores host name mismatches. Default value is <span>false</span>.</li>
+
+<li><b><span>hostnameVerifierClass</span></b><b><span> </span></b>- The fully
+qualified name of a class to be used as a host name verifier. Default value is empty string, i.e. not set.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.18.6.<span>&nbsp;&nbsp; </span>TcpConnectionPool</h4>
+
+<p>TcpConnectionPool is a pool for tcp connections and inherits the properties of ThreadPool.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.18.7.<span>&nbsp;&nbsp; </span>TcpSessionPool (deprecated)</h4>
+
+<p>TcpSessionPool is a pool for tcp connections and inherits the properties of ThreadPool.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.19.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp.http</span></a></h3>
+
+<h4><a>3.19.1.<span>&nbsp;&nbsp; </span>HttpServer</a></h4>
+
+<p>HttpServer is a simple http server component that inherits the properties of TcpServer.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>documentRoot
+</span></b>- The root directory used by this HttpServer when translating a http path to a path on the local file system. The default value is the current
+directory.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.19.2.<span>&nbsp;&nbsp; </span>HttpCommunicationManager</h4>
+
+<p>HttpCommunicationManager is a component for http communication that inherits the properties of TcpCommunicationManager.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.20.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp.http.proxy</span></a></h3>
+
+<h4>3.20.1.<span>&nbsp;&nbsp; </span>HttpProxy</h4>
+
+<p>HttpProxy is a component for http proxy functionality that inherits the properties of HttpCommunicationManager.</p>
+
+<p>&nbsp;</p>
+
+<h4>3.20.2.<span>&nbsp;&nbsp; </span>HttpProxyClient</h4>
+
+<p>HttpProxyClient is a component used to connect to a HttpProxy in order to service proxied requests. This class inherits the
+properties of MessagingManager.</p>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.21.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp.http.xmlrpc</span></a></h3>
+
+<h4>3.21.1.<span>&nbsp;&nbsp; </span>XmlRpcCommunicationManager</h4>
+
+<p>XmlRpcCommunicationManager is a component for XML RPC over HTTP communication that inherits the properties of
+HttpCommunicationManager.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>defaultErrorCode
+</span></b>- The default error code for to be used when errors occur. Default value is <span>0</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.21.2.<span>&nbsp;&nbsp; </span>XmlRpcProxyClient</h4>
+
+<p>XmlRpcProxyClient is a component for XML RPC over HTTP communication that connects to an HTTP proxy. This class inherits the
+properties of HttpProxyClient.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>defaultErrorCode
+</span></b>- The default error code for to be used when errors occur. Default value is <span>0</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.22.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp.messaging</span></a></h3>
+
+<h4>3.22.1.<span>&nbsp;&nbsp; </span>MessagingManager</h4>
+
+<p>MessagingManager is a component for high level messaging based communication between servers. This class inherits the
+properties of TcpCommunicationManager. MessagingManager contains a ThreadPool (named MessageHandlerPool) as a child component.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>remoteAddresses
+</span></b>- Addresses (ip:port) for the destinations that the MessagingManager should attempt to create connections to. Note that address ids (interface names)
+also may be specified for each address through this property, by prefixing the address by the id and an equals sign, i.e. name=ip:port. This is also
+true for the property localAddresses, which is defined by the class TcpCommunicationManager.</li>
+
+<li><b><span>connectionsPerDestination
+</span></b>- The maximum number of client endpoints that are to be created for each destination. Default value is <span>2</span>.</li>
+
+<li><b><span>responseTimeout
+</span></b>- Maximum time(ms) to wait for a response to a message sent to a remote messaging system. Default value is <span>10000</span>
+ms.</li>
+
+<li><b><span>asynchMessageDispatchTimeout
+</span></b>- Maximum time(ms) to wait for an asynchronous message to get dispatched. Default value is <span>10000</span> ms.</li>
+
+<li><b><span>messageReadTimeout
+</span></b>- The timeout in milliseconds used to detect stalled/aborted reading of incomming messages by a message receiver. Default value is <span>30000</span> ms.</li>
+
+<li><b><span>checkInteval
+</span></b>- The interval in milliseconds at which checks are performed on connections and meta data update commands are dispatched.. Default value is <span>30000</span> ms.</li>
+
+<li><b><span>reportLoad
+</span></b>- Boolean value indicating if a load value should be should be set automatically for each thread handling an incomming message (note that a load
+manager also must be present to enable load reporting). Default value is <span>true</span>.</li>
+
+<li><b><span>enableServerAdministration
+</span></b>- Boolean value indicating if remote server administration of this server should be enabled though this subsystem. Default value is <span>true</span>.</li>
+
+<li><b><i><span>destinations</span></i></b><b><span> </span></b>- A list containing
+information about all destinations. This property replaces (renames) the property endpoint groups of TcpCommunicationManager.</li>
+
+<li><b><span>statisticsEnabled
+</span></b>- Boolean value indicating if statistics should be enabled. Default value is <span>false</span>.</li>
+
+<li><b><span>proxyingEnabled
+</span></b>- Boolean value indicating if proxying, i.e. if the MessagingManager should act as a proxy for all connected servers (or actually the registered named
+receivers of them), should be enabled. Default value is <span>false</span>.</li>
+
+<li><b><span>remoteServiceNames
+</span></b>- The names of the services that this MessagingManager is to connect to. Addresses for the service names will be fetched from an SNS.</li>
+
+<li><b><span>localServiceNames
+</span></b>- The names of the services provided by this MessagingManager, used for registratration in an SNS.</li>
+
+<li><b><span>exposeMessageReceiversAsServices
+</span></b>- Boolean value indicating if message receivers should be exposes as SNS services.</li>
+
+<li><b><span>useProxiedMessageReceivers
+</span></b>- Boolean value indicating if message receivers available via a proxy should be used for message dispatch. This property will affect the destinations
+returned by the methods getDestinations(String) and getDestinations(Map).</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>3.22.2.<span>&nbsp;&nbsp; </span>MessageReceiverComponent</h4>
+
+<p>Abstract MessageReceiver implementation repesenting a message handler associated with a MessagingManager.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>receiverName
+</span></b>- The name by which this component will be registered as a named receiver of messages.</li>
+
+<li><b><span>accessControlCheckEnabled
+</span></b>- Flag indicating if the access control check is enabled or not for this message receiver.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.23.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp.messaging.admin.web.jetty</span></a></h3>
+
+<h4>3.23.1.<span>&nbsp;&nbsp; </span>CustomAdministrationWebAppHandler</h4>
+
+<p>Jetty based implementation of web/HTTP based custom (server specific) administration of the server.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>customAdministrationWar
+</span></b>- The WAR (file or expanded directory) containing the custom administration web application.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.24.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.tcp.messaging.ejb</span></a></h3>
+
+<h4>3.24.1.<span>&nbsp;&nbsp; </span>CustomAdministrationWebAppHandler</h4>
+
+<p>Jetty based implementation of web/HTTP based custom (server specific) administration of the server.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>ejbJndiName
+</span></b>- The JNDI name of the EJB that this component will relay calls to.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a><span>3.25.<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Components
+in package com.teletalk.jserver.util</span></a></h3>
+
+<h4>3.25.1.<span>&nbsp;&nbsp; </span>DiskSpaceCheckAction</h4>
+
+<p>DiskSpaceCheckAction is a periodic action that performs disk space checks. This class inherits the properties of
+PeriodicAction. <b>Note</b>: This class relies on a native implementation which for the moment only is available for Windows.</p>
+
+<h5><span>Properties:</span></h5>
+<ul>
+<li><b><span>drives
+</span></b>- The drives (paths) and corresponding minimum disk free space in MB (for instance C=1000). Default value is null, i.e. not set.</li>
+
+<li><b><span>lowDiskSpaceErrorCode
+</span></b>- The critical error code that will be logged when a drive/path has too low disk space free. Default value is <span>9000</span>
+(the constant JServerConstants.LOG_MESSAGE_ID_LOW_DISK_SPACE).</li>
+
+<li><b><span>diskSpaceCheckErrorsCritical
+</span></b>- Boolean property indicating if disk space check errors should be logged as critical/fatal. Default value is <span>false</span>.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+
+
+
+<h2><a></a><a><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span>Sample configuration file</span></a><span>s</span></h2>
+
+<h3><a><span>4.1.<span> </span></span><span>Default systems server</span></a></h3>
+
+<p>Example of possible settings for a server containing only the default systems.</p>
+
+<pre>
+   &lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+   &lt;JServer name=&quot;TestServer&quot;&gt;
+
+      &lt;property name=&quot;logLevel&quot;value=&quot;Debug&quot;/&gt;
+
+      &lt;MainHttpServer name=&quot;MainHttpServer&quot;&gt;
+           &lt;property name=&quot;localPort&quot; value=&quot;9991&quot;/&gt;
+           &lt;property name=&quot;localAddress&quot; value=&quot;10.6.1.51&quot;/&gt;
+           &lt;property name=&quot;backlog&quot; value=&quot;51&quot;/&gt;
+           &lt;property name=&quot;connectionLoggingEnabled&quot; value=&quot;false&quot;/&gt;
+           &lt;property name=&quot;documentRoot&quot; value=&quot;&quot;/&gt;
+   
+         &lt;Component name=&quot;ConnectionPool&quot;&gt;
+              &lt;property name=&quot;minSize&quot; value=&quot;5&quot;/&gt;
+              &lt;property name=&quot;maxSize&quot; value=&quot;15&quot;/&gt;
+              &lt;property name=&quot;objectExpirationTime&quot; value=&quot;0&quot;/&gt;
+              &lt;property name=&quot;cleanupInterval&quot; value=&quot;60000&quot;/&gt;
+              &lt;property name=&quot;statisticsEnabled&quot; value=&quot;true&quot;/&gt;
+           &lt;/Component&gt;
+   
+      &lt;/MainHttpServer&gt;
+   
+      &lt;RmiManager name=&quot;RmiManager&quot;&gt;
+           &lt;property name=&quot;registryAddresses&quot; value=&quot;0.0.0.0:1099&quot;/&gt;
+           &lt;property name=&quot;rmiCodeBase&quot; value=&quot;<a>http://10.6.1.51:9991/</a>&quot;/&gt;
+           &lt;property name=&quot;rmiExportAddresses&quot; value=&quot;0.0.0.0:0&quot;/&gt;
+        &lt;/RmiManager&gt;
+   
+      &lt;LogManager name=&quot;LogManager&quot;&gt;
+           &lt;property name=&quot;getLocationInformation&quot; value=&quot;false&quot;/&gt;
+   
+         &lt;Component name=&quot;FileAppender&quot;&gt;
+              &lt;property name=&quot;logLevelThreshold&quot; value=&quot;All&quot;/&gt;
+              &lt;property name=&quot;periodicity&quot; value=&quot;Daily (weekly cyclicity)&quot;/&gt;
+              &lt;property name=&quot;flushInterval&quot; value=&quot;5000&quot;/&gt;
+              &lt;property name=&quot;logFilePath&quot; value=&quot;&quot;/&gt;
+              &lt;property name=&quot;defaultLayoutPattern&quot; value=&quot;%d  %-5p  [%t] - %m %S%n&quot;/&gt;
+              &lt;property name=&quot;logPrefix&quot; value=&quot;Test_&quot;/&gt;
+           &lt;/Component&gt;
+   
+         &lt;Component name=&quot;CriticalErrorAppender&quot;&gt;
+              &lt;property name=&quot;logPrefix&quot; value=&quot;Test_&quot;/&gt;
+              &lt;property name=&quot;logSuffix&quot; value=&quot;.err &quot;/&gt;
+              &lt;property name=&quot;logFilePath&quot; value=&quot;&quot;/&gt;
+              &lt;property name=&quot;remoteLoggingEnabled&quot; value=&quot;false&quot;/&gt;
+              &lt;property name=&quot;remoteLoggingAddresses&quot; value=&quot;10.6.1.51:6666&quot;/&gt;
+              &lt;property name=&quot;writeLocalErrorFiles&quot; value=&quot;false&quot;/&gt;
+           &lt;/Component&gt;
+   
+      &lt;/LogManager&gt;
+   
+      &lt;EventQueue name=&quot;EventQueue&quot;&gt;
+           &lt;property name=&quot;logLevel&quot; value=&quot;Debug&quot;/&gt;
+           &lt;property name=&quot;maxQueueSize&quot; value=&quot;10000&quot;/&gt;
+   
+         &lt;Component name=&quot;EventDispatcherPool&quot;&gt;
+              &lt;property name=&quot;logLevel&quot; value=&quot;Debug&quot;/&gt;
+              &lt;property name=&quot;minSize&quot; value=&quot;5&quot;/&gt;
+              &lt;property name=&quot;maxSize&quot; value=&quot;20&quot;/&gt;
+              &lt;property name=&quot;objectExpirationTime&quot; value=&quot;0&quot;/&gt;
+              &lt;property name=&quot;cleanupInterval&quot; value=&quot;60000&quot;/&gt;
+              &lt;property name=&quot;statisticsEnabled&quot; value=&quot;true&quot;/&gt;
+           &lt;/Component&gt;
+   
+      &lt;/EventQueue&gt;
+   
+      &lt;ConfigurationManager name=&quot;PropertyManager&quot;&gt;
+           &lt;property name=&quot;logLevel&quot; value=&quot;Debug&quot;/&gt;
+           &lt;property name=&quot;keySystem&quot; value=&quot;true&quot;/&gt;
+           &lt;property name=&quot;calculationInteval&quot; value=&quot;2000&quot;/&gt;
+           &lt;property name=&quot;saveInterval&quot; value=&quot;15000&quot;/&gt;
+        &lt;/ConfigurationManager&gt;
+   
+      &lt;PeriodicActionManager name=&quot;PeriodicActionManager&quot;&gt;
+           &lt;property name=&quot;logLevel&quot; value=&quot;Debug&quot;/&gt;
+   
+         &lt;Component name=&quot;PeriodicActionThreadPool&quot;&gt;
+              &lt;property name=&quot;logLevel&quot; value=&quot;Debug&quot;/&gt;
+              &lt;property name=&quot;minSize&quot; value=&quot;2&quot;/&gt;
+              &lt;property name=&quot;maxSize&quot; value=&quot;10&quot;/&gt;
+              &lt;property name=&quot;objectExpirationTime&quot; value=&quot;0&quot;/&gt;
+              &lt;property name=&quot;cleanupInterval&quot; value=&quot;60000&quot;/&gt;
+              &lt;property name=&quot;statisticsEnabled&quot; value=&quot;true&quot;/&gt;
+           &lt;/Component&gt;
+   
+      &lt;/PeriodicActionManager&gt;
+
+   &lt;/JServer&gt;
+</pre>
+
+<p><span>&nbsp;</span></p>
+
+<h3><a><span>4.2.<span> </span></span><span>Server using dynamically
+component</span></a></h3>
+
+<p>Example of server using a dynamically added periodic action to check disk space.</p>
+
+<pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+
+&lt;JServer name=&quot;TestServer&quot;&gt;
+
+   &lt;PeriodicActionManager&gt;
+
+      &lt;Component name=&quot;DiskSpaceChecker&quot;
+       class=&quot;com.teletalk.jserver.util.DiskSpaceCheckAction&quot;&gt;
+
+         &lt;property name=&quot;logLevel&quot; value=&quot;Debug&quot;/&gt;
+
+         &lt;property name=&quot;pathsToCheck&quot;&gt;
+            &lt;value&gt;C=50000&lt;/value&gt;
+            &lt;value&gt;T=50000&lt;/value&gt;
+         &lt;/property&gt;
+
+         &lt;property name=&quot;diskSpaceCheckErrorsCritical&quot;value=&quot;true&quot;/&gt;
+
+         &lt;property name=&quot;periodicityType&quot;value=&quot;INTERVAL&quot;/&gt;
+
+         &lt;property name=&quot;interval&quot; value=&quot;3600000&quot;/&gt;
+
+      &lt;/Component&gt;
+
+   &lt;/PeriodicActionManager&gt;
+
+&lt;/JServer&gt;
+</pre>
+
+<p><span>&nbsp;</span></p>
+
+<h2><a></a><a><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span>References</span></a></h2>
+
+<h3><a><span>5.1.<span> </span></span><span>Log4J</span></a></h3>
+
+<p>Documentation:</p>
+
+<p><a target="_blank" href="http://logging.apache.org/log4j/docs/documentation.html">http://logging.apache.org/log4j/docs/documentation.html</a></p>
+
+
+
+</div>
+
+</body>
+
+</html>

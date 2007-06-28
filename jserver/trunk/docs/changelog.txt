@@ -1,0 +1,163 @@
+Change log for the JServer Framework
+--------------------------------------------------------------------------------
+
+
+Version 2.2 (20070625)
+
+* First version after conversion to open source project.
+
+* Project directory structure and build scripts updated.
+
+
+Version 2.1.6 (20070508)
+
+* Hot Beans messaging based administration package moved from hot beans into package com.teletalk.jserver.tcp.messaging.admin.hotbeans.
+
+* Introduced support for custom, web based administration of a server (packages com.teletalk.jserver.tcp.messaging.admin.web and 
+   com.teletalk.jserver.tcp.messaging.admin.web.jetty). 
+
+* QueueMessagingManager now always consumes and caches incomming messages when received.
+
+* New methods added so ServerAdministrationInterface (version 8): 
+   - ServerFileInfo[] listServerFiles()
+   - ServerFileInfo[] listServerFiles(String)
+   - ServerFileData getServerFile(String)
+   - void putServerFile(ServerFileData) 
+   - boolean deleteServerFile(String)
+    
+* MessageQueueThread.queueMessage now returns a boolean, indicating if the message could be queued. 
+   Applications using this class should be recompiled with the latest JServer version before deployment with it.
+
+
+Version 2.1.5 (20070426)
+
+* Introduced flush interval property in FileDBQueueStorage. Default flush interval is 100.
+
+
+Version 2.1.5 (20070425)
+
+* FileDBQueueStorage updated to handle storage errors better. The file database is now reloaded when an error occurs.
+
+
+Version 2.1.5 (20070423)
+
+* Fix in SubComponent.getFullName to prevent a possible dead-lock situation.
+
+* Increased default maxQueueSize in LogManager to 10000.
+
+
+Version 2.1.5 (20070419)
+
+* Removed property connectionLoggingEnabled from TcpServer. Replaced by log level of connection pool.
+
+* All HTTP related logging in HttpResponseUtils (such as alive request logging) is now logged as debug rather than info.
+
+
+Version 2.1.5 (20070418)
+
+* Added methods getAllCompletedAsList and getAllNotCompletedAsList to Queue.
+
+* Minor improvments in Queue and QueueManagerImplBase.
+
+
+Version 2.1.5 (20070413)
+
+* MessageQueue can now be extended.
+
+* Added class PriorityMessageQueue and the corresponding class PriorityMessageQueueItem.
+
+
+Version 2.1.5 (20070411)
+
+* Added methods delete(File, boolean, long) and delete(String, boolean, long) to FileDeletor.
+
+
+Version 2.1.5 (20070404)
+
+* In- and out queue checks are now always performed in doInitialize if the QueueManager isn't reinitializing.
+
+
+Version 2.1.5 (20070402)
+
+* Added field messageHandlerThread to com.teletalk.jserver.tcp.messaging.Message keep track of a reference to the thread responsible for 
+   handling the message. This makes it possible to log the stack trace of the thread in the event that a read time out occurs.
+   
+* Added class com.teletalk.jserver.queue.messaging.QueueSystemCommandConstants. This class contains message type constants and a method for getting 
+   the appropriate message type given a certain queue system command class. New message types have also been added so that all queue system command 
+   classes now have a specific message type.
+
+
+Version 2.1.5 (20070301)
+
+* Added method setRpcHandlerMappings to RpcMessageReceiver.
+
+
+Version 2.1.5 (20070227)
+
+* QueueManager now creates a DefaultQueueSystemCollaborationManager in doInitialize instead of in the constructor, 
+   if no collaboration manager is set.
+
+
+Version 2.1.5 (20070222)
+
+* Fixed problems in SpringApplicationContext related bean post processing. Auto proxying and other Spring features now work properly.
+
+
+Version 2.1.5 (20070212)
+
+* MessagingRpcInterfaceProxyFactoryBean now supports registration of the receiverName property as a remote service name in the associated 
+   MessagingManager, by setting the property registerReceiverNameAsServiceName to true.
+
+* All logCritical method that don't take a critical error id parameter are now marked as deprecated.
+
+
+Version 2.1.5 (20070207)
+
+* StandaloneFileAppenderComponent can now be added to a LogManager by setting the field addToLogManager to true. StandaloneFileAppenderComponent 
+   is now also equipped with a log filter that denies all logs from the standard JServer/Log4J framework, which means that it will log only messages that originates 
+   from calls made directly on the component itself (i.e using for instance the log methods).
+
+* Removed LoggableObject.log(LoggingEvent) for clarity reasons. Replaced by LoggableObject.getLogger().log(LoggingEvent).
+
+* Fixed bugs in SpringApplicationContext related to registration of SubComponents/SubSystems. 
+
+* SpringApplicationContext also supports Spring 2.0.
+
+* Support has been added to SpringApplicationContext to inject references to core JServer systems. See JServerConstants for information about the 
+   names of the core components (XXX_ALIAS constants).
+
+
+Version 2.1.5 (20070115)
+
+* Support for Java 6.
+
+* Fixed bugs in MapProperty: 
+	- Specifying initial values in the constructor now works.
+	- The internal Map used by the method get(String) is now always in synch with the underlying value list (in MultiValueProperty).
+	
+
+Version 2.1.5 (20061218)
+
+* Support for JBoss intergration added (com.teletalk.jserver.jboss).
+
+* Added com.teletalk.jserver.tcp.messaging.ejb.EjbMessageReceiverComponent.
+
+
+Version 2.1.5 (20061211)
+
+* Minor improvments in com.teletalk.jserver.util.filedb.DefaultDataFile regarding input validation.
+
+
+Version 2.1.5 (20061208)
+
+* IpAndPortEndPointIdentifier: Fixed bug in getAddressAsLong that generated invalid long representations for certain IP and port combinations.
+
+
+Version 2.1.5 (20061207)
+
+* Updated last write time logic in DefaultBlockFile.
+
+
+Version 2.1.5 (20061016)
+
+* An instance of com.teletalk.jserver.util.AFreeWorld() is no longer set as security manager by RmiManager.

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="TestHttpServer">
+   
+   <Component name="HttpServer">
+    <property name="localAddress" value="localhost"/>
+    </Component>
+    
+</JServer>

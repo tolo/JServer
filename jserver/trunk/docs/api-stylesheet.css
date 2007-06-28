@@ -1,0 +1,32 @@
+/* Javadoc style sheet */
+
+/* Define colors, fonts and other style attributes here to override the defaults  */
+
+/* Page background color */
+body { FONT-FAMILY: Verdana, Arial, Helvetica; font-size: 10pt; background-color: #f6f6f4 }
+H1 { FONT-FAMILY: Verdana, Arial, Helvetica; font-size: 18pt; FONT-WEIGHT: bold; }
+H2 { FONT-FAMILY: Verdana, Arial, Helvetica; font-size: 16pt; FONT-WEIGHT: bold; }
+A  { COLOR: #5F00BD; TEXT-DECORATION: none }
+CODE { FONT-SIZE: 9pt; }
+/* Table colors */
+.TableHeadingColor     { COLOR: #f6f6f4; FONT-SIZE: 9pt;font-size: normal; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background: #607e9b } /* Dark mauve */
+.TableSubHeadingColor  { COLOR: #f6f6f4; FONT-SIZE: 9pt;FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background: #607e9b } /* Light mauve */
+.TableRowColor         { COLOR: black; FONT-SIZE: 9pt;FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background: #f6f6f4 } /* White */
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { COLOR: black; font-size: normal; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none }
+.FrameHeadingFont { COLOR: black; font-size: normal; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none }
+.FrameItemFont    { COLOR: black; font-size: normal; font-size: 19pt; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none }
+
+/* Example of smaller, sans-serif font in frames */
+.FrameItemFont  { COLOR: black; font-size: 10pt; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none }
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background-color:#607e9b;}/* Light mauve */
+.NavBarCell1Rev { COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background-color:#405e7b;}/* Dark Blue */
+.NavBarFont1    { COLOR: #f6f6f4; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none }
+.NavBarFont1Rev { COLOR: #f6f6f4; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none }
+
+.NavBarCell2    { COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background-color:#f6f6f4;}
+.NavBarCell3    { COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica; TEXT-DECORATION: none; background-color:#f6f6f4;}
+

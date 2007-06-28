@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Sample" default="run" basedir=".">
+
+	<property file="../build.properties"/>
+	
+	<description>Sample build file</description>
+	
+    <property name="dist.dir" location="../../../dist"/>
+    <property name="bin.dir" location="../bin"/>
+    <property name="lib.dir" location="../../../lib"/>
+
+	<path id="class.path">
+		<pathelement path="${java.class.path}/"/>
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+		<pathelement location="${dist.dir}/jserver.jar"/>
+	</path>
+	
+	<path id="class.path.run">
+		<path refid="class.path"/>
+		<pathelement path="${bin.dir}/"/>
+	</path>
+
+	
+	<!-- RUN TARGET-->
+	<target name="run" description="Runs the sample">
+		
+		<java classpathref="class.path.run" classname="RelayServer" fork="true"/>
+		
+	</target>
+	
+</project>

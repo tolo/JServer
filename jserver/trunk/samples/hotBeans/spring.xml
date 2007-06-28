@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="FileSystemHotBeanModuleRepository" class="hotbeans.support.FileSystemHotBeanModuleRepository"/>
+	
+	<bean id="TestInterfaceProxy" class="hotbeans.support.HotBeanProxyFactoryBean">
+		<property name="hotBeanModuleRepository"><ref local="FileSystemHotBeanModuleRepository"/></property>
+		<property name="moduleName"><value>TestModule</value></property>
+		<property name="beanName"><value>MyLittleTestBean</value></property>
+		<property name="interfaces">
+			<list>
+				<value>TestBeanInterface</value>
+			</list>
+		</property>		
+	</bean>
+	
+	<bean id="TestSystem" class="TestSystem">
+		<property name="testInterface"><ref local="TestInterfaceProxy"/></property>
+	</bean>
+	
+</beans>

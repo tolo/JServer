@@ -1,0 +1,1 @@
+Before running this example, JSP-libraries must be copied into lib (for instance el-api.jar, jasper-el.jar, jasper-jdt.jar, jasper.jar, jsp-api.jar, tomcat-juli.jar from Tomcat 6.X).

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JServer name="Sender">
+<!--<JServer name="Receiver">-->
+
+    <SnsClientManager>
+        <property name="logLevel" value="Debug"/>    
+    
+        <property name="remoteAddresses">
+        <!--<value>localhost:12122</value>-->
+<value>localhost:12121</value>
+</property>
+
+        <!--<property name="socketFactoryClass" value="com.teletalk.jserver.tcp.SSLSocketFactory"/>
+         
+		<Component name="SSLSocketFactory">
+	        <property name="logLevel" value="Debug"/>		
+         	<property name="keyStoreName" value="keystore"/>
+         	<property name="keyStorePassword" value="password"/>
+			<property name="securityProtocol" value="TLS"/>
+			<property name="useNaiveTrustManager" value="true"/>
+			<property name="useNaiveHostnameVerifier" value="true"/>						
+		</Component>      -->  
+        
+        <!--<Component name="EndpointPool">        
+            <property name="logLevel" value="Debug"/>                
+        </Component>                -->
+        
+    </SnsClientManager>
+
+    <Component name="SenderSystem">
+
+        <Component name="MessagingManager">
+            <property name="remoteServiceNames" value="Receiver"/>
+        
+            <!--<property name="localServiceNames">
+<value>Dummy1</value>
+<value>Dummy2</value>
+</property>-->
+            <property name="logLevel" value="Debug"/>
+            
+            <Component name="EndpointPool">        
+            <property name="logLevel" value="Debug"/>                
+            </Component>  
+        </Component>
+    </Component>
+
+</JServer>

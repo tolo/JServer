@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="SendServer">
+   
+    <SnsClientManager>
+        <property name="remoteAddresses" value="localhost:12121"/>
+	     <property name="logLevel" value="Info"/>
+    </SnsClientManager>
+   
+   <Component name="SendController">
+      
+        <Component name="QueueManager">
+         
+            <property name="logLevel" value="Info"/>
+            
+             <Component name="out-queue">
+                <Component name="FileDBQueueStorage">
+                   <property name="dataFileBlockSize" value="4096"/>
+                </Component>
+             </Component>
+         
+            <Component name="QueueMessagingManager">
+            
+                <!--<property name="remoteServiceNames" value="queueTestReceiver"/>-->
+                <property name="remoteServiceNames" value="queueTestRelayer"/>
+                
+                <property name="logLevel" value="Info"/>
+                
+            <Component name="EndpointPool">
+                <property name="logLevel" value="Info"/>
+            </Component>
+            </Component>
+        
+      </Component>
+    
+    </Component>
+    
+      <MainHttpServer name="MainHttpServer">
+<property name="localPort" value="9910"/>
+</MainHttpServer>
+    
+
+   
+   <LogManager name="LogManager">
+      
+      <DefaultFileLogger name="FileAppender">
+<property name="defaultLayoutPattern" value="%d  %-5p  [%c] - %m %S%n"/>
+</DefaultFileLogger>
+</LogManager>
+</JServer>

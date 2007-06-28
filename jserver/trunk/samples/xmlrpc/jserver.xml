@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="TestServer">
+    <Component name="XmlRpcCommunicationManager">
+        <property name="socketFactoryClass" value="com.teletalk.jserver.tcp.DefaultSSLSocketFactory"/>
+        <property name="serverSocketFactoryClass" value="com.teletalk.jserver.tcp.DefaultSSLServerSocketFactory"/>
+    </Component>
+</JServer>

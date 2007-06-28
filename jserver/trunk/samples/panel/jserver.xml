@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="PanelTestServer">
+   
+   <MainHttpServer name="MainHttpServer">
+      <property name="localAddress" value="localhost"/>
+      <property name="localPort" value="9901"/>
+   
+      
+      <property name="logLevel" value="Debug"/>
+      <Component name="ConnectionPool">
+         <property name="logLevel" value="Debug"/>
+      </Component>
+   </MainHttpServer>
+   
+    <RmiManager>
+      <property name="rmiCodeBase" value="http://localhost:9901/"/>
+   </RmiManager>
+   
+</JServer>

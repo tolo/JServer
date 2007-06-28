@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JServer name="JServerJBossService">   
+
+   <RmiManager>
+      <property name="registryAddresses" value="localhost:1999"/>
+   </RmiManager>   
+
+   <Component name="MessagingManager" class="com.teletalk.jserver.tcp.messaging.MessagingManager">
+      
+      <property name="remoteAddresses" value="localhost:8989"/>
+      
+      <Component name="EjbMessageReceiver" class="com.teletalk.jserver.tcp.messaging.ejb.EjbMessageReceiverComponent">
+         <property name="ejbJndiName" value="EJB3Trail/LocalCalculator"/>
+         <property name="receiverName" value="calculator"/>
+      </Component>
+   
+   </Component>
+   
+</JServer>

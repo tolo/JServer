@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+   <!-- The data source (pool) - must be created and engaged first since it (the DataSource) is used on start up by JdbcTestDao (JdbcDaoSupport) -->
+   <bean id="TestSystem.DataSource" class="com.teletalk.jserver.jdbc.PooledSmartDataSource" init-method="engage" />
+
+    <!-- The TestDao implementation to be used -->
+   <bean id="testDaoTarget" class="JdbcTestDao" depends-on="TestSystem.DataSource">
+      <property name="dataSource">
+         <ref local="TestSystem.DataSource" />
+      </property>
+      <property name="eventQueue">
+         <!-- Inject a reference to the JServer EventQueue, made available as a bean by the SpringApplicationContext through a parent application context. -->
+         <ref parent="EventQueue" />
+      </property>
+   </bean>
+
+
+   <!-- An custom AOP enabled exception translator class -->
+   <bean id="myInvocationExceptionTranslator" class="MyInvocationExceptionTranslator" />
+
+   <!-- Create a dynamic proxy for testDaoTarget (JdbcTestDao) that enables exception translation through myInvocationExceptionTranslator -->
+   <bean id="testDao" class="org.springframework.aop.framework.ProxyFactoryBean">
+      <property name="target">
+         <ref local="testDaoTarget" />
+      </property>
+      <property name="interceptorNames">
+         <list>
+            <value>myInvocationExceptionTranslator</value>
+         </list>
+      </property>
+   </bean>
+
+
+
+   <!--  Create a default message receiver component and add an RPC handler mapping to it for the testDao object -->
+   <bean id="MyLittleMessageReceiver" class="com.teletalk.jserver.tcp.messaging.MessageReceiverComponent">
+      <property name="rpcHandlerMappings">
+         <map>
+            <entry key="test">
+               <ref local="testDao" />
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+
+   <!-- Create a MessagingManager -->
+   <bean id="MessagingManager" class="com.teletalk.jserver.tcp.messaging.MessagingManager">
+      <property name="messageReceiverComponents">
+         <list>
+            <ref local="MyLittleMessageReceiver" />
+         </list>
+      </property>
+   </bean>
+
+   <bean id="MessagingManager.DummyTestComponent" class="com.teletalk.jserver.tcp.SSLServerSocketFactory" />
+
+
+   <bean id="TestSystem.TestComponent1" class="TestComponent"></bean>
+
+   <bean id="TestSystem" class="TestSystem">
+      <property name="testComponent1">
+         <ref bean="TestSystem.TestComponent1" />
+      </property>
+      <property name="testComponent2">
+         <ref bean="TestSystem.TestComponent2" />
+      </property>
+      <property name="testPool">
+         <ref bean="TestSystem.TestPool" />
+      </property>
+   </bean>
+
+   <bean id="TestSystem.TestComponent2" class="TestComponent"></bean>
+
+   <bean id="TestSystem.TestPool" class="com.teletalk.jserver.pool.ThreadPool">
+      <constructor-arg><ref local="TestSystem" /></constructor-arg>
+      <constructor-arg><value>TestPool</value></constructor-arg>
+      <constructor-arg><value>2</value></constructor-arg>
+      <constructor-arg><value>2</value></constructor-arg>
+      <constructor-arg><bean id="ALittlePoolWorkerFactory" class="ALittlePoolWorkerFactory"/></constructor-arg>
+   </bean>
+   
+</beans>

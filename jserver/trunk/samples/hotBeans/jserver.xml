@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="HotBeansServer">
+   
+   <LogManager>
+	   <property name="addToRootLogger" value="true"/>
+   </LogManager>
+   
+   <MainHttpServer/>
+   
+   <SpringApplicationContext>
+       <property name="logLevel" value="Debug"/>
+      
+       <Component class="com.teletalk.jserver.spring.SubComponentBeanProxy" name="FileSystemHotBeanModuleRepository">
+       	<property name="checkInterval" value="20000"/>
+         <property name="useJServerPropertyFile" value="true"/>
+	     </Component>
+   </SpringApplicationContext>
+   
+   <RmiManager/>
+   
+</JServer>

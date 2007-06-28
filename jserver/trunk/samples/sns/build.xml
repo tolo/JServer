@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Sample" default="compile" basedir=".">
+
+	<property file="../build.properties"/>
+	
+	<description>Sample build file</description>
+	
+	<!-- Set global properties for this build -->
+    <property name="dist.dir" location="../../dist"/>
+    <property name="bin.dir" location="bin"/>
+    <property name="lib.dir" location="../../lib"/>
+    <property name="src.dir" location="src"/>
+
+	<path id="class.path">
+		<pathelement path="${java.class.path}/"/>
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+		<pathelement location="${dist.dir}/jserver.jar"/>
+	</path>
+	
+	<path id="class.path.run">
+		<path refid="class.path"/>
+		<pathelement path="${bin.dir}/"/>
+	</path>
+
+	
+	<!-- COMPILE TARGET-->
+	<target name="compile" description="Compile the source">
+		<mkdir dir="${bin.dir}"/>
+	   
+		<!-- Compile the java code from ${src.dir} into ${bin.dir} -->
+	    <javac srcdir="${src.dir}" destdir="${bin.dir}" debug="false">
+			<classpath refid="class.path"/>
+		</javac>
+
+	</target>
+	
+</project>

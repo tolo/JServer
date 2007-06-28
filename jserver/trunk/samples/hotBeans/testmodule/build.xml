@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="TestModule" default="build" basedir=".">
+
+	<property file="../../build.properties"/>
+	
+	<description>TestModule build file</description>
+	
+	<!-- Set global properties for this build -->
+	<property name="dist.dir" location="../../../dist"/>
+   <property name="bin.dir" location="bin"/>
+	<property name="lib.dir" location="../../../lib"/>
+	<property name="module.dir" location="module"/>
+	<property name="src.dir" location="src"/>
+
+	<path id="class.path">
+		<pathelement path="${java.class.path}/"/>
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+		<pathelement location="${dist.dir}/jserver.jar"/>
+		<pathelement location="../bin"/>
+	</path>
+	
+	
+	<!-- BUILD TARGET -->
+	<target name="build" depends="compile" description="Compiles and builds the application">
+
+		<mkdir dir="${module.dir}/lib"/>
+		
+		<!-- Create the time stamp -->
+		<tstamp>
+		   <format property="jarTime" pattern="yyyy-MM-dd HH:mm"/>
+		</tstamp>
+	   
+	   <!-- Make lib/testModuleClasses.jar -->
+		<jar jarfile="${module.dir}/lib/testModuleClasses.jar">
+			<fileset dir="${bin.dir}" excludes="**/test/**"/>
+			<manifest>
+			    <attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Compiled-With" value="${java.version}"/>
+				<attribute name="Build-Date" value="${jarTime}"/>
+				<attribute name="Implementation-Title" value="TestModule"/>
+				<attribute name="Implementation-Version" value="${DSTAMP}${TSTAMP}"/>
+			</manifest>
+		</jar>
+		
+	   <!-- Make testModule.jar -->
+		<jar jarfile="testModule.jar">
+			<fileset dir="${module.dir}" excludes="**/test/**"/>
+		</jar>	
+
+	</target>
+   
+	
+	<!-- COMPILE TARGET-->
+	<target name="compile" description="Compile the source">
+		<mkdir dir="${bin.dir}"/>
+	   
+		<!-- Compile the java code from ${src.dir} into ${bin.dir} -->
+	    <javac srcdir="${src.dir}" destdir="${bin.dir}" debug="false">
+			<classpath refid="class.path"/>
+		</javac>
+
+	</target>
+	
+</project>

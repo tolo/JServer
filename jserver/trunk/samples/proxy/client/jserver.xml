@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="ProxyClientServer">
+   
+   <MainHttpServer name="MainHttpServer">
+      <property name="localPort" value="9902"/>
+   </MainHttpServer>
+   
+   <Component name="ProxyClient">
+      <property name="remoteAddresses" value="localhost:9191"/>
+   </Component>
+</JServer>

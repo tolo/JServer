@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="AdminTestServer">
+   
+   <Component name="MessagingManager1">
+      <property name="remoteAddresses" value="0.0.0.0:44001"/>
+   </Component>
+   
+   <Component name="MessagingManager2">
+      <property name="localAddresses" value="0.0.0.0:44001"/>
+   </Component>
+</JServer>

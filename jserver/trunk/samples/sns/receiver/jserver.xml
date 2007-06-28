@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JServer name="Receiver">
+
+    <property name="logLevel" value="Debug"/>
+    <SnsClientManager>
+        <property name="remoteAddresses" value="localhost:12121">
+         <!--<value>localhost:12121</value>
+         <value>localhost:12122</value>--></property>
+        <property name="logLevel" value="Debug"/>
+
+        <!--<property name="socketFactoryClass" value="com.teletalk.jserver.tcp.SSLSocketFactory"/>
+
+        <Component name="SSLSocketFactory">
+            <property name="logLevel" value="Debug"/>        
+            
+            <property name="securityProtocol" value="TLS"/>
+            <property name="useNaiveTrustManager" value="true"/>
+            <property name="useNaiveHostnameVerifier" value="true"/>
+            
+            <property name="wrappedSocketFactoryClass" value="com.teletalk.jserver.tcp.HttpProxySocketFactory"/>
+            
+            <Component name="HttpProxySocketFactory">
+	            <property name="proxyHost" value="10.6.1.67"/>
+	            <property name="proxyPort" value="8080"/>
+		    <property name="logLevel" value="Debug"/>
+         </Component>	            
+		    
+        </Component>-->
+        
+        <Component name="EndpointPool">        
+            <property name="logLevel" value="Debug"/>                
+        </Component>
+
+    </SnsClientManager>
+
+    <Component name="MessagingManager">
+            
+    <property name="localAddresses" value="localhost:13132"/>
+        
+<!--<property name="localServiceNames" value="Receiver"/>-->
+<!--<property name="localServiceNames">
+      <value>Receiver</value>
+<value>t1</value>
+<value>t2</value>
+</property>-->
+        <property name="logLevel" value="Debug"/>
+        
+        <Component name="EndpointPool">        
+            <property name="logLevel" value="Debug"/>                
+        </Component>  
+    </Component>
+   
+   <LogManager name="LogManager">
+      
+      <DefaultCriticalErrorLogger name="CriticalErrorAppender">
+         <property name="logLevel" value="Debug"/>
+         <property name="remoteLoggingServiceNames" value="CELMa"/>
+      </DefaultCriticalErrorLogger>
+   </LogManager>
+</JServer>

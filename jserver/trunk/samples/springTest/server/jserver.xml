@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="SpringTestServer">
+   
+   <LogManager>
+	   <property name="addToRootLogger" value="true"/>
+   </LogManager>
+   
+   <MainHttpServer/>
+   
+	<Component name="MessagingManager">
+   	<property name="logLevel" value="Debug"/>   
+   	<property name="localAddresses" value="localhost:11233"/>      	
+
+      <Component name="MyLittleMessageReceiver">
+         <property name="receiverName" value="examples.springTest"/>
+      <property name="accessControlCheckEnabled" value="true"/>
+         <property name="logLevel" value="Debug"/>
+      </Component>
+   </Component>
+   
+   <SpringApplicationContext>
+   	<property name="logLevel" value="Debug"/>   
+      
+      <Component class="com.teletalk.jserver.spring.SubComponentBeanProxy" name="testDao">
+         <property name="logLevel" value="Info"/>
+         <property name="beanName" value="testDaoTarget"/>
+         <!--<property name="managedLoggerNames">
+         <value>JdbcTestDao</value>
+         </property>-->
+         <property name="testValue" value="TestBritt2"/>
+      </Component>      
+   </SpringApplicationContext>
+   
+   <ConfigurationManager name="PropertyManager">
+      <property name="logLevel" value="Info"/>
+   </ConfigurationManager>
+   
+   <Component name="TestSystem">
+        <Component name="DataSource">
+   	        <property name="logLevel" value="Info"/>
+		    <property name="driver" value="org.hsqldb.jdbcDriver"/>
+		    <property name="databaseURL" value="jdbc:hsqldb:file:springtest/db"/>
+		    <property name="username" value="sa"/>
+		    <property name="password" value=""/>
+        </Component>
+    </Component>
+</JServer>

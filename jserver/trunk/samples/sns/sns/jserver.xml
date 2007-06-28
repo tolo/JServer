@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JServer name="SnsServer1">
+
+    <SnsManager>
+        <property name="logLevel" value="Debug"/>
+
+        <property name="localAddresses">
+<value>localhost:12121</value>
+</property>
+        <property name="remoteAddresses" value="localhost:5555"/>
+
+        <property name="proxyingEnabled" value="true"/>
+        <property name="exposeMessageReceiversAsServices" value="false"/>
+
+        <property name="responseTimeout" value="5000"/>
+        <property name="checkInteval" value="60000"/>
+        <property name="serverEntryLingerTime" value="1"/>
+        <property name="manualServices">
+            <value>WAF=localhost:5555</value>
+            <value>CELMa=localhost:7711</value>
+        </property>
+
+        <!--<property name="serverSocketFactoryClass" value="com.teletalk.jserver.tcp.SSLServerSocketFactory"/>
+
+        <Component name="SSLServerSocketFactory">
+            <property name="logLevel" value="Debug"/>
+            <property name="keyStoreName" value="keystore"/>
+            <property name="keyStorePassword" value="password"/>
+            <property name="securityProtocol" value="TLS"/>
+        </Component>-->
+
+        <Component name="EndpointPool">        
+            <property name="logLevel" value="Debug"/>                
+        </Component>        
+
+    
+      
+      <Component name="MessageHandlerPool">
+         <property name="logLevel" value="Debug"/>
+      </Component>
+   </SnsManager>
+
+
+</JServer>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="RelayServer">
+   
+    <SnsClientManager>
+        <property name="remoteAddresses" value="localhost:12121"/>
+	     <property name="logLevel" value="Info"/>
+    </SnsClientManager>
+   
+   <Component name="RelayController">
+      
+      <Component name="QueueManager">
+         
+         <property name="logLevel" value="Debug"/>
+         
+        <property name="maxInQueueSize" value="200"/>
+         <Component name="QueueMessagingManager">
+            <property name="remoteServiceNames" value="queueTestReceiver"/>
+            <property name="localAddresses" value="localhost:6829"/>
+            <property name="logLevel" value="Info"/>
+      </Component>
+         
+      </Component>
+      
+   </Component>
+
+   
+   <MainHttpServer name="MainHttpServer">
+<property name="localPort" value="9911"/>
+</MainHttpServer>
+</JServer>

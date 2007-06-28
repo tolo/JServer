@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JServer name="Sender">
+   
+   <Component name="SenderSystem">
+      
+      <Component name="MessagingManager">
+         <property name="remoteAddresses">
+<value>localhost:12121</value>
+<value>localhost:12122</value>
+</property>
+         <property name="logLevel" value="Debug"/>
+         
+         <property name="responseTimeout" value="10000"/>
+<Component name="EndpointPool">
+            <property name="logLevel" value="Debug"/>
+         </Component>
+      </Component>
+      
+   </Component>
+</JServer>

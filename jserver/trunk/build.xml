@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="JServer 2.2" default="build" basedir=".">
+
+	<description> JServer build file</description>
+
+	<property file="build.properties"/>
+
+	<!-- Set global properties for this build -->
+	<property name="build.dir" location="build"/>
+	<property name="build.classes.dir" location="build/classes"/>
+	<property name="conf.dir" location="conf"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="docs.dir" location="docs"/>
+	<property name="docs.api.dir" location="docs/api"/>
+	<property name="lib.dir" location="lib"/>
+	<property name="package.dir" location="packages"/>
+	<property name="res.dir" location="res"/>
+	<property name="samples.dir" location="samples"/>
+	<property name="src.java.dir" location="src/java"/>
+	<property name="src.native.dir" location="src/native"/>
+	<property name="test.dir" location="test"/>
+	<property name="test.src" location="test/junit"/>
+	<property name="systeminfo.dll" location="src/native/win32/Release/SystemInfo.dll"/>
+	
+
+	<path id="class.path">
+		<pathelement path="${java.class.path}/"/>
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+
+	<path id="test.class.path">
+		<path refid="class.path"/>
+		<pathelement location="${build.classes.dir}" />
+		<pathelement location="./test" />
+		<pathelement location="." />
+	</path>
+	
+	
+	<!-- PACKAGE -->
+	<target name="package">
+		<delete dir="${package.dir}"/>
+		<mkdir dir="${package.dir}"/>
+		
+		<!-- zip normal dist -->
+		<zip destfile="${package.dir}/jserver-${jserver.version}.zip">
+			<zipfileset prefix="dist" dir="${dist.dir}" includes="**/**"/>
+			<zipfileset prefix="docs" dir="${docs.dir}" includes="**/**" excludes="api-stylesheet.css"/>
+			<zipfileset dir="." includes="*.txt" excludes="copyToExcludes.txt"/>
+		</zip>
+		
+		<!-- zip full dist -->
+		<zip destfile="${package.dir}/jserver-${jserver.version}-full.zip">
+			<zipfileset prefix="dist" dir="${dist.dir}" includes="**/**" excludes="jserver-${jserver.version}-src.zip"/>
+			<zipfileset prefix="docs" dir="${docs.dir}" includes="**/**" excludes="api-stylesheet.css"/>
+			<zipfileset prefix="lib" dir="${lib.dir}" includes="**/**"/>
+			<zipfileset prefix="res" dir="${res.dir}" includes="**/**"/>
+			<zipfileset prefix="samples" dir="${samples.dir}" includes="**/**" excludes="**/build/** **/*.log **/*.class **/*.jar **/*.idx **/*.dat"/>
+			<zipfileset prefix="src/java" dir="${src.java.dir}" includes="**/**"/>
+			<zipfileset prefix="src/native" dir="${src.native.dir}" includes="**/*.cpp **/*.h **/*.vcproj **/*.sln **/*.suo"/>
+			<zipfileset prefix="test" dir="${test.dir}" includes="**/**"/>
+			<zipfileset dir="." includes="*.txt" excludes="copyToExcludes.txt"/>
+			<zipfileset file="build.xml"/>
+			<zipfileset file="build.properties"/>
+		</zip>
+		
+	</target>
+	
+
+	<!-- DIST -->
+	<target name="distAndTest" depends="dist,test"/>
+
+
+	<!-- DIST NO TEST -->
+	<target name="dist" depends="clean,build">
+		<copy file="${conf.dir}/jadmin.bat" todir="${dist.dir}"/>
+
+		<!-- zip source -->
+		<zip destfile="${dist.dir}/jserver-${jserver.version}-src.zip">
+			<zipfileset dir="${src.java.dir}" includes="**/*.java **/*.html"/>
+		</zip>
+	</target>
+	
+
+	<!-- COMPILE -->
+	<target name="compile" description="Compile the source">
+		<mkdir dir="${build.classes.dir}"/>
+
+		<!-- Compile the java code from ${src.java.dir} into ${build} -->
+		<javac srcdir="${src.java.dir}" destdir="${build.classes.dir}" debuglevel="lines,vars,source" debug="true" classpathref="class.path"/>
+
+
+		<!-- Compile the tests -->
+		<javac srcdir="${test.src}" destdir="${build.classes.dir}" debuglevel="lines,vars,source" debug="true" classpathref="class.path"/>
+
+		<!-- Copy test config files -->
+		<copy todir="${build.classes.dir}" includeemptydirs="true" overwrite="true">
+			<fileset dir="${test.src}" excludes="**/CVS/**" includes="**/*.xml"/>
+		</copy>
+	</target>
+
+
+	<!-- RMI COMPILE -->
+	<target name="compileRmi" description="Compile RMI stubs" depends="compile">
+		<!-- Compile the java code from ${src.java.dir} into ${build} -->
+		<rmic classname="com.teletalk.jserver.rmi.Administration" debug="true" classpathref="class.path" base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.client.Administrator" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.client.RmiClient" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.JServerRmiHost" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.JServerRmiInterface" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.remote.RemoteInputStreamImpl" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.adapter.JServerRmiAdapter" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.adapter.PropertyRmiAdapter" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.adapter.SubComponentRmiAdapter" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.adapter.SubSystemRmiAdapter" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.adapter.AppenderComponentRmiAdapter" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+		<rmic classname="com.teletalk.jserver.rmi.adapter.VectorPropertyRmiAdapter" debug="true" classpathref="class.path"  base="${build.classes.dir}"/>
+	</target>
+
+
+	<!-- BUILD -->
+	<target name="build" depends="compile,compileRmi">
+
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		
+		<!-- Create the time stamp -->
+		<tstamp/>
+		
+		<!-- Make jserver.jar -->
+		<jar jarfile="${dist.dir}/jserver.jar">
+			<fileset dir="${build.classes.dir}">
+				<patternset includes="**/com/teletalk/**"/>
+			</fileset>
+			<fileset dir="${res.dir}">
+				<patternset includes="**/**" excludes="**/Thumbs.db"/>
+			</fileset>
+			<fileset file="${systeminfo.dll}"/>
+			<manifest>
+				<attribute name="Title" value="JServer ${jserver.version}"/>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Compiled-With" value="${java.version}"/>
+				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}"/>
+				<attribute name="Implementation-Title" value="Debug"/>
+				<attribute name="Implementation-Version" value="${DSTAMP}${TSTAMP}"/>
+				<attribute name="Implementation-Vendor" value="JServer"/>
+				<attribute name="Main-Class" value="com.teletalk.jadmin.AdminApp"/>
+				<attribute name="Class-Path" value="${log4j.jar.file}"/>
+			</manifest>
+		</jar>
+
+	</target>
+
+	
+	<!-- CLEAN -->
+	<target name="clean">
+		<!-- Force complete rebuild -->
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+	</target>
+
+
+	<!-- JUNIT TEST TARGET -->
+	<target name="test">
+
+		<junit showoutput="true" printsummary="true" haltonerror="true" haltonfailure="true">
+			<!-- fork="true" dir="${basedir}" -->
+			<classpath refid="test.class.path"/>
+			<formatter type="plain" usefile="false"/>
+
+			<test name="com.teletalk.jserver.AllTests"/>
+		</junit>
+
+	</target>
+
+
+	<!-- JAVADOC -->
+	<target name="javadoc">
+		<delete dir="${docs.api.dir}"/>
+		<mkdir dir="${docs.api.dir}"/>
+		<javadoc classpathref="class.path" destdir="${docs.api.dir}" author="true" stylesheetfile="${docs.dir}/api-stylesheet.css" 
+			windowtitle="JServer ${jserver.version} API Specification" doctitle="JServer ${jserver.version} API Specification" 
+			header="JServer ${jserver.version}" overview="${src.java.dir}\overview.html" useexternalfile="true">
+			<fileset dir="${src.java.dir}" includes="**/jserver/**/*.java"/>
+		</javadoc>
+	</target>
+
+</project>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<JServer name="Relayer">
+   
+   <Component class="com.teletalk.jserver.tcp.messaging.MessagingManager" name="MessagingManager">
+      <property name="localAddresses" value="localhost:12121"/>
+      <property name="proxyingEnabled" value="true"/>
+   <property name="logLevel" value="Debug"/>
+   </Component>
+   
+</JServer>

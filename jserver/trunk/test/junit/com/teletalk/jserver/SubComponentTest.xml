@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JServer name="JUnitTestServer">
+
+   <Component name="A">
+   	<property name="logLevel" value="Debug"/>
+   	
+   	<Component name="B">
+   		<property name="logLevel" value="Warning"/>
+   		
+	   	<Component name="C">
+	   		<property name="logLevel" value="Warning"/>
+		   </Component>
+	   </Component>
+	   
+   	<Component name="X">
+   		<property name="logLevel" value="Debug"/>
+   		
+	   	<Component name="C">
+	   		<property name="logLevel" value="Debug"/>
+		   </Component>
+	   </Component>	   
+   </Component>
+
+</JServer>
