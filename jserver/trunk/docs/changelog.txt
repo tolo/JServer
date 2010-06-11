@@ -1,6 +1,10 @@
 Change log for the JServer Framework
 --------------------------------------------------------------------------------
 
+Version 2.2.1 (20100611)
+
+* Added log4j.jar.file property to build.properties. 
+
 
 Version 2.2 (20070625)
 
