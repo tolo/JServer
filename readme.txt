@@ -15,8 +15,12 @@ object/thread/connection pooling, service discovery and registration, common
 administration interface (GUI and protocol), log management and property 
 management.
 
-JServer was created almost 10 years ago by John-John Roslund and Tobias 
-Löfstrand while working at TeleTalk AB (later known as Link Messaging AB). 
+See also the related (but standalone) project HotBeans 
+(https://github.com/tolo/HotBeans), that provides support for hot 
+deployable modules. 
+
+JServer was initially created back in 1999 by John-John Roslund and Tobias 
+LÃ¶fstrand while working at TeleTalk AB (later known as Link Messaging AB). 
 In May 2007, the copyright was donated back from Link Messaging AB to the 
 original creators, with the intent to publish the software as open source. 
 
@@ -56,7 +60,7 @@ The full ("-full") distribution of JServer contains all third party libraries th
 required to build JServer. All third party libraries are subject to their respective 
 licenses (see below). The dependencies are the following:
 
-* HotBeans (http://www.sourceforge.net/projects/hotbeans)
+* HotBeans (https://github.com/tolo/HotBeans)
 Required for building: Yes
 Required at runtime: Optional
 File(s): lib/hotbeans/hotbeans.jar
